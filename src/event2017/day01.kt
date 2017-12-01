@@ -19,6 +19,7 @@ fun main(args: Array<String>) {
     partOne("1111", 4)
     partOne("1234", 0)
     partOne("91212129", 9)
+    partOne(input, 1089)
     println("answer: " + captcha(input))
 
     banner("part 2")
@@ -28,6 +29,7 @@ fun main(args: Array<String>) {
     partTwo("123425", 4)
     partTwo("123123", 12)
     partTwo("12131415", 4)
+    partTwo(input, 1156)
     println("answer: " + captcha2(input))
 }
 
