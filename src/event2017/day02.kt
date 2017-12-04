@@ -25,6 +25,7 @@ fun main(args: Array<String>) {
     partTwo("5 9 2 8\n" +
             "9 4 7 3\n" +
             "3 8 6 5", 9)
+    partTwo(input, 314)
     println("answer: " + checksum2(input))
 }
 
@@ -57,6 +58,14 @@ val checksum1 = checksumFactory { row ->
 }
 
 val checksum2 = checksumFactory { row ->
-    row.max()!! - row.min()!!
+    val sorted = row.distinct().sorted()
+    val p = sorted.mapIndexed { i, a ->
+        Pair(a, sorted.drop(i + 1))
+    }.map { p ->
+        Pair(p.first, p.second.find { b -> b % p.first == 0 })
+    }.find { p ->
+        p.second != null
+    }
+    p!!.second!! / p.first
 }
 
