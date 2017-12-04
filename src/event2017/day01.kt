@@ -35,7 +35,7 @@ fun banner(label:String) {
     println("= ${label} ".padEnd(80, '='))
 }
 
-fun <T> check(functionUnderTest:(String) -> T) = { input:String, expected:T ->
+fun <I, R> check(functionUnderTest:(I) -> R) = { input:I, expected:R ->
         val actual = functionUnderTest(input)
         if (actual != expected)
             println("Expected '$expected' but got '$actual' (from '$input')");
