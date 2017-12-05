@@ -9,15 +9,37 @@ package event2017
 fun main(args: Array<String>) {
     val input = 361527
 
-    banner("part one")
-    val partOne = check(::steps)
+    banner("part one (analytical)")
+    val partOne = check(::analytical)
     partOne(1, 0)
     partOne(12, 3)
-    partOne(23, 2)
-    partOne(1024, 31)
+//    partOne(23, 2)
+//    partOne(1024, 31)
     partOne(input, 326)
     println("answer: " + steps(input))
 
+    banner("part one (array)")
+    val partOneArray = check(::steps)
+    partOneArray(1, 0)
+    partOneArray(12, 3)
+    partOneArray(23, 2)
+    partOneArray(1024, 31)
+    partOneArray(input, 326)
+    println("answer: " + steps(input))
+
+}
+
+fun analytical(input:Int):Int {
+    if (input == 1) {
+        return 0
+    }
+    val base = Math.floor(Math.sqrt(input.toDouble())).toInt()
+    val halfSpan = base / 2
+    val delta = input - base * base
+    if (base % 2 == 0) {
+        throw UnsupportedOperationException("didn't figure out this quadrants")
+    }
+    return base - 1 - halfSpan + (delta - halfSpan)
 }
 
 enum class Direction {
