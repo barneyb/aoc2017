@@ -36,7 +36,7 @@ fun main(args: Array<String>) {
 
 }
 
-fun analytical(input:Int):Int {
+private fun analytical(input:Int):Int {
     if (input == 1) {
         return 0
     }
@@ -49,25 +49,25 @@ fun analytical(input:Int):Int {
     return base - 1 - halfSpan + (delta - halfSpan)
 }
 
-enum class Direction {
+private enum class Direction {
     UP, DOWN, LEFT, RIGHT
 }
 
-data class Cursor(
+private data class Cursor(
     val x: Int,
     val y: Int,
     val n: Int,
     val d: Direction
 )
 
-typealias Grid = Pair<Int, Array<Int>>
+private typealias Grid = Pair<Int, Array<Int>>
 
-fun makeGrid(input:Int):Grid {
+private fun makeGrid(input:Int):Grid {
     val dim = Math.sqrt(input.toDouble()).toInt() + 2
     return Pair(dim, Array(dim * dim, { 0 }))
 }
 
-fun spiral(grid:Grid, dropUntil:Int, nWork:(Cursor) -> Cursor):Cursor {
+private fun spiral(grid:Grid, dropUntil:Int, nWork:(Cursor) -> Cursor):Cursor {
     var cur = Cursor(grid.first / 2, grid.first / 2, 1, Direction.RIGHT)
     while (cur.n < dropUntil) {
         grid.second[cur.x + cur.y * grid.first] = cur.n
@@ -97,14 +97,14 @@ fun spiral(grid:Grid, dropUntil:Int, nWork:(Cursor) -> Cursor):Cursor {
     return cur
 }
 
-fun steps(input:Int):Int {
+private fun steps(input:Int):Int {
     val grid = makeGrid(input)
     val origin = Pair(grid.first / 2, grid.first / 2)
     val cur = spiral(grid, input, { cur -> cur.copy(n = cur.n + 1) })
     return Math.abs(origin.first - cur.x) + Math.abs(origin.second - cur.y)
 }
 
-fun firstLarger(input:Int):Int {
+private fun firstLarger(input:Int):Int {
     val grid = makeGrid(input)
     val cur = spiral(grid, input + 1, { cur ->
         cur.copy(n = grid.second[(cur.x + 1) +  cur.y * grid.first]
