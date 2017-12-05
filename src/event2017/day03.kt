@@ -44,7 +44,7 @@ private fun analytical(input:Int):Int {
     val halfSpan = base / 2
     val delta = input - base * base
     if (base % 2 == 0) {
-        throw UnsupportedOperationException("didn't figure out this quadrants")
+        throw UnsupportedOperationException("didn't figure out this quadrant")
     }
     return base - 1 - halfSpan + (delta - halfSpan)
 }
@@ -53,14 +53,33 @@ private enum class Direction {
     UP, DOWN, LEFT, RIGHT
 }
 
+private data class Point(
+    val x: Int,
+    val y: Int
+)
+
 private data class Cursor(
     val x: Int,
     val y: Int,
-    val n: Int,
-    val d: Direction
-)
+    val n: Int = 1,
+    val d: Direction = Direction.RIGHT
+) {
+    constructor(p:Point) : this(p.x, p.y)
+}
 
 private typealias Grid = Pair<Int, Array<Int>>
+
+private operator fun Grid.get(x:Int, y:Int):Int {
+    return second[x + y * first]
+}
+
+private operator fun Grid.set(x:Int, y:Int, n:Int) {
+    second[x + y * first] = n
+}
+
+private fun Grid.origin():Point {
+    return Point(first / 2, first / 2)
+}
 
 private fun makeGrid(input:Int):Grid {
     val dim = Math.sqrt(input.toDouble()).toInt() + 2
@@ -68,27 +87,27 @@ private fun makeGrid(input:Int):Grid {
 }
 
 private fun spiral(grid:Grid, dropUntil:Int, nWork:(Cursor) -> Cursor):Cursor {
-    var cur = Cursor(grid.first / 2, grid.first / 2, 1, Direction.RIGHT)
+    var cur = Cursor(grid.origin())
     while (cur.n < dropUntil) {
-        grid.second[cur.x + cur.y * grid.first] = cur.n
+        grid[cur.x, cur.y] = cur.n
         when (cur.d) {
             Direction.UP ->
-                cur = if (grid.second[(cur.x - 1) + cur.y * grid.first] == 0)
+                cur = if (grid[cur.x - 1, cur.y] == 0)
                     nWork(cur.copy(x = cur.x - 1, d = Direction.LEFT))
                 else
                     nWork(cur.copy(y = cur.y + 1))
             Direction.LEFT ->
-                cur = if (grid.second[cur.x + (cur.y - 1) * grid.first] == 0)
+                cur = if (grid[cur.x, cur.y - 1] == 0)
                     nWork(cur.copy(y = cur.y - 1, d = Direction.DOWN))
                 else
                     nWork(cur.copy(x = cur.x - 1))
             Direction.DOWN ->
-                cur = if (grid.second[(cur.x + 1) + cur.y * grid.first] == 0)
+                cur = if (grid[cur.x + 1, cur.y] == 0)
                     nWork(cur.copy(x = cur.x + 1, d = Direction.RIGHT))
                 else
                     nWork(cur.copy(y = cur.y - 1))
             Direction.RIGHT ->
-                cur = if (grid.second[cur.x + (cur.y + 1) * grid.first] == 0)
+                cur = if (grid[cur.x, cur.y + 1] == 0)
                     nWork(cur.copy(y = cur.y + 1, d = Direction.UP))
                 else
                     nWork(cur.copy(x = cur.x + 1))
@@ -99,22 +118,23 @@ private fun spiral(grid:Grid, dropUntil:Int, nWork:(Cursor) -> Cursor):Cursor {
 
 private fun steps(input:Int):Int {
     val grid = makeGrid(input)
-    val origin = Pair(grid.first / 2, grid.first / 2)
+    val origin = grid.origin()
     val cur = spiral(grid, input, { cur -> cur.copy(n = cur.n + 1) })
-    return Math.abs(origin.first - cur.x) + Math.abs(origin.second - cur.y)
+    return Math.abs(origin.x - cur.x) + Math.abs(origin.y - cur.y)
 }
 
 private fun firstLarger(input:Int):Int {
     val grid = makeGrid(input)
     val cur = spiral(grid, input + 1, { cur ->
-        cur.copy(n = grid.second[(cur.x + 1) +  cur.y * grid.first]
-            + grid.second[ cur.x      + (cur.y + 1) * grid.first]
-            + grid.second[(cur.x - 1) +  cur.y * grid.first]
-            + grid.second[ cur.x      + (cur.y - 1) * grid.first]
-            + grid.second[(cur.x + 1) + (cur.y + 1) * grid.first]
-            + grid.second[(cur.x + 1) + (cur.y - 1) * grid.first]
-            + grid.second[(cur.x - 1) + (cur.y + 1) * grid.first]
-            + grid.second[(cur.x - 1) + (cur.y - 1) * grid.first]
+        cur.copy(n =
+              grid[cur.x + 1, cur.y    ]
+            + grid[cur.x    , cur.y + 1]
+            + grid[cur.x - 1, cur.y    ]
+            + grid[cur.x    , cur.y - 1]
+            + grid[cur.x + 1, cur.y + 1]
+            + grid[cur.x + 1, cur.y - 1]
+            + grid[cur.x - 1, cur.y + 1]
+            + grid[cur.x - 1, cur.y - 1]
         )
     })
     return cur.n
