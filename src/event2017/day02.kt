@@ -32,7 +32,7 @@ fun main(args: Array<String>) {
 typealias Row = List<Int>
 typealias Sheet = List<Row>;
 
-fun parse(sheet: String):Sheet {
+private fun parse(sheet: String):Sheet {
     return sheet
             .replace('\t', ' ')
             .trim()
