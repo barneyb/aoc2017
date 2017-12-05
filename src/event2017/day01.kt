@@ -37,8 +37,13 @@ fun banner(label:String) {
 
 fun <I, R> check(functionUnderTest:(I) -> R) = { input:I, expected:R ->
         val actual = functionUnderTest(input)
-        if (actual != expected)
-            println("Expected '$expected' but got '$actual' (from '$input')");
+        if (actual != expected) {
+            var vi = input.toString()
+            if (vi.length > 100) {
+                vi = vi.substring(0, 90) + "... (${vi.length - 90} chars truncated)"
+            }
+            println("Expected '$expected' but got '$actual' (from '$vi')");
+        }
     }
 
 val captcha = captchaFactory { it.last().toString().plus(it) }
