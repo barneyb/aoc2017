@@ -60,39 +60,62 @@ data class Cursor(
     val d: Direction
 )
 
-fun steps(input:Int):Int {
+typealias Grid = Pair<Int, Array<Int>>
+
+fun makeGrid(input:Int):Grid {
     val dim = Math.sqrt(input.toDouble()).toInt() + 2
-    val origin = Pair(dim / 2, dim / 2)
-    var cur = Cursor(origin.first, origin.second, 1, Direction.RIGHT)
-    val array = kotlin.arrayOfNulls<Int>(dim * dim)
-    while (cur.n < input) {
-        array[cur.x + cur.y * dim] = cur.n
+    return Pair(dim, Array(dim * dim, { 0 }))
+}
+
+fun spiral(grid:Grid, dropUntil:Int, nWork:(Cursor) -> Cursor):Cursor {
+    var cur = Cursor(grid.first / 2, grid.first / 2, 1, Direction.RIGHT)
+    while (cur.n < dropUntil) {
+        grid.second[cur.x + cur.y * grid.first] = cur.n
         when (cur.d) {
             Direction.UP ->
-                cur = if (array[(cur.x - 1) + cur.y * dim] == null)
-                    cur.copy(n = cur.n + 1, x = cur.x - 1, d = Direction.LEFT)
+                cur = if (grid.second[(cur.x - 1) + cur.y * grid.first] == 0)
+                    nWork(cur.copy(x = cur.x - 1, d = Direction.LEFT))
                 else
-                    cur.copy(n = cur.n + 1, y = cur.y + 1)
+                    nWork(cur.copy(y = cur.y + 1))
             Direction.LEFT ->
-                cur = if (array[cur.x + (cur.y - 1) * dim] == null)
-                    cur.copy(n = cur.n + 1, y = cur.y - 1, d = Direction.DOWN)
+                cur = if (grid.second[cur.x + (cur.y - 1) * grid.first] == 0)
+                    nWork(cur.copy(y = cur.y - 1, d = Direction.DOWN))
                 else
-                    cur.copy(n = cur.n + 1, x = cur.x - 1)
+                    nWork(cur.copy(x = cur.x - 1))
             Direction.DOWN ->
-                cur = if (array[(cur.x + 1) + cur.y * dim] == null)
-                    cur.copy(n = cur.n + 1, x = cur.x + 1, d = Direction.RIGHT)
+                cur = if (grid.second[(cur.x + 1) + cur.y * grid.first] == 0)
+                    nWork(cur.copy(x = cur.x + 1, d = Direction.RIGHT))
                 else
-                    cur.copy(n = cur.n + 1, y = cur.y - 1)
+                    nWork(cur.copy(y = cur.y - 1))
             Direction.RIGHT ->
-                cur = if (array[cur.x + (cur.y + 1) * dim] == null)
-                    cur.copy(n = cur.n + 1, y = cur.y + 1, d = Direction.UP)
+                cur = if (grid.second[cur.x + (cur.y + 1) * grid.first] == 0)
+                    nWork(cur.copy(y = cur.y + 1, d = Direction.UP))
                 else
-                    cur.copy(n = cur.n + 1, x = cur.x + 1)
+                    nWork(cur.copy(x = cur.x + 1))
         }
     }
+    return cur
+}
+
+fun steps(input:Int):Int {
+    val grid = makeGrid(input)
+    val origin = Pair(grid.first / 2, grid.first / 2)
+    val cur = spiral(grid, input, { cur -> cur.copy(n = cur.n + 1) })
     return Math.abs(origin.first - cur.x) + Math.abs(origin.second - cur.y)
 }
 
 fun firstLarger(input:Int):Int {
-    return 0
+    val grid = makeGrid(input)
+    val cur = spiral(grid, input + 1, { cur ->
+        cur.copy(n = grid.second[(cur.x + 1) +  cur.y * grid.first]
+            + grid.second[ cur.x      + (cur.y + 1) * grid.first]
+            + grid.second[(cur.x - 1) +  cur.y * grid.first]
+            + grid.second[ cur.x      + (cur.y - 1) * grid.first]
+            + grid.second[(cur.x + 1) + (cur.y + 1) * grid.first]
+            + grid.second[(cur.x + 1) + (cur.y - 1) * grid.first]
+            + grid.second[(cur.x - 1) + (cur.y + 1) * grid.first]
+            + grid.second[(cur.x - 1) + (cur.y - 1) * grid.first]
+        )
+    })
+    return cur.n
 }
