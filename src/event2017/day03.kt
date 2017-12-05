@@ -27,6 +27,13 @@ fun main(args: Array<String>) {
     partOneArray(input, 326)
     println("answer: " + steps(input))
 
+    banner("part two")
+    val partTwo = check(::firstLarger)
+    partTwo(12, 23)
+    partTwo(54, 57)
+    partTwo(500, 747)
+    println("answer: " + firstLarger(input))
+
 }
 
 fun analytical(input:Int):Int {
@@ -84,4 +91,8 @@ fun steps(input:Int):Int {
         }
     }
     return Math.abs(origin.first - cur.x) + Math.abs(origin.second - cur.y)
+}
+
+fun firstLarger(input:Int):Int {
+    return 0
 }
