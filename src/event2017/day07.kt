@@ -9,10 +9,7 @@ import java.io.File
  */
 fun main(args: Array<String>) {
     val input = File("input/2017/day07.txt").readText().trim()
-
-    banner("part one")
-    val partOne = check(::nameOfRoot)
-    partOne("pbga (66)\n" +
+    val exampleInput = "pbga (66)\n" +
             "xhth (57)\n" +
             "ebii (61)\n" +
             "havc (66)\n" +
@@ -24,9 +21,34 @@ fun main(args: Array<String>) {
             "jptl (61)\n" +
             "ugml (68) -> gyxo, ebii, jptl\n" +
             "gyxo (61)\n" +
-            "cntj (57)", "tknk")
+            "cntj (57)"
+
+    banner("part one (cancel)")
+    val partOneCancel = check(::nameOfRootCancel)
+    partOneCancel(exampleInput, "tknk")
+    partOneCancel(input, "hlhomy")
+    println("answer: " + nameOfRootCancel(input))
+
+    banner("part one (tree)")
+    val partOne = check(::nameOfRootTree)
+    partOne(exampleInput, "tknk")
     partOne(input, "hlhomy")
-    println("answer: " + nameOfRoot(input))
+    println("answer: " + nameOfRootTree(input))
+}
+
+private fun nameOfRootCancel(input: String): String {
+    val lines = input.trim().split("\n")
+    val names = mutableSetOf<String>()
+    lines.forEach {
+        names.add(it.split(" ").first())
+    }
+    lines.filter { it.contains("->") }
+            .forEach {
+                val (_, kids) =it.split(">")
+                names.removeAll(kids.split(",")
+                        .map { it.trim() })
+            }
+    return names.first()
 }
 
 private data class Program(
@@ -83,6 +105,6 @@ private fun List<Program>.toNode(): Node {
     }.first().first.values.first()
 }
 
-private fun nameOfRoot(input: String): String {
+private fun nameOfRootTree(input: String): String {
     return parse(input).toNode().name
 }
