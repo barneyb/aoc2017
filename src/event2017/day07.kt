@@ -29,6 +29,12 @@ fun main(args: Array<String>) {
     partOneCancel(input, "hlhomy")
     println("answer: " + nameOfRootCancel(input))
 
+    banner("part one (parse/cancel)")
+    val partOneParseCancel = check(::partOneParseCancel)
+    partOneParseCancel(exampleInput, "tknk")
+    partOneParseCancel(input, "hlhomy")
+    println("answer: " + partOneParseCancel(input))
+
     banner("part one (tree)")
     val partOne = check(::nameOfRootTree)
     partOne(exampleInput, "tknk")
@@ -73,6 +79,18 @@ private fun parse(input: String): List<Program> {
                 val p = Program(name.trim(), weight.toInt(), kids)
                 p
             }
+}
+
+private fun partOneParseCancel(input: String): String {
+    val progs = parse(input)
+    val names = mutableSetOf<String>()
+    progs.forEach {
+        names.add(it.name)
+    }
+    progs.forEach {
+        names.removeAll(it.kids)
+    }
+    return names.first()
 }
 
 private data class Node(
