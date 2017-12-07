@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
     banner("part two")
     val partTwo = check(::cyclesInLoop )
     partTwo("0\t2\t7\t0", 4)
-//    partTwo(input, 6681)
+    partTwo(input, 2392)
     println("answer: " + cyclesInLoop(input))
 }
 
@@ -50,8 +50,20 @@ private fun cyclesToReentrance(input:String):Int {
             .count()
 }
 
-private fun cyclesInLoop(input:String):Int {
-    return input.length
+private fun cyclesInLoop(input: String): Int {
+    val uniquer = mutableMapOf<String, Int>()
+    val pairs = generateSequence(1, { it + 1 })
+            .zip(gen(input)
+                    .map { it.joinToString(",") })
+            .dropWhile { p ->
+                val isRepeat =  uniquer.containsKey(p.second)
+                if (! isRepeat) {
+                    uniquer.put(p.second, p.first)
+                }
+                ! isRepeat
+            }
+    val pair = pairs.first()
+    return pair.first - uniquer.get(pair.second)!!
 }
 
 private fun parse(input: String) =
