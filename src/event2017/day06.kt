@@ -11,13 +11,19 @@ fun main(args: Array<String>) {
     val input = File("input/2017/day06.txt").readText().trim()
 
     banner("part one")
-    val partOne = check(::count)
+    val partOne = check(::cyclesToReentrance)
     partOne("0\t2\t7\t0", 5)
     partOne(input, 6681)
-    println("answer: " + count(input))
+    println("answer: " + cyclesToReentrance(input))
+
+    banner("part two")
+    val partTwo = check(::cyclesInLoop )
+    partTwo("0\t2\t7\t0", 4)
+//    partTwo(input, 6681)
+    println("answer: " + cyclesInLoop(input))
 }
 
-fun count(input:String):Int {
+fun cyclesToReentrance(input:String):Int {
     val banks = parse(input)
     val l = banks.size
     val uniquer = mutableSetOf<String>()
@@ -35,6 +41,10 @@ fun count(input:String):Int {
         counter += 1
     } while (! uniquer.contains(banks.toString()))
     return counter
+}
+
+fun cyclesInLoop(input:String):Int {
+    return input.length
 }
 
 private fun parse(input: String) =
