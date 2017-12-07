@@ -21,3 +21,11 @@ fun <I, R> check(functionUnderTest:(I) -> R) = { input:I, expected:R ->
         println("Expected '$expected' but got '$actual' (from $vi)");
     }
 }
+
+fun <T, R> Iterable<T>.scan(initial: R, operation: (acc: R, T) -> R): Iterable<R> {
+    return this.fold(Pair(initial, mutableListOf(initial)), { a, it ->
+        val next = operation(a.first, it)
+        a.second.plusAssign(next)
+        Pair(next, a.second)
+    }).second
+}
