@@ -40,6 +40,12 @@ fun main(args: Array<String>) {
     partOne(exampleInput, "tknk")
     partOne(input, "hlhomy")
     println("answer: " + nameOfRootTree(input))
+
+    banner("part two")
+    val partTwo = check(::correctedWeight)
+    partTwo(exampleInput, 60)
+    partTwo(input, 1505)
+    println("answer: " + correctedWeight(input))
 }
 
 private fun nameOfRootCancel(input: String): String {
@@ -125,4 +131,38 @@ private fun List<Program>.toNode(): Node {
 
 private fun nameOfRootTree(input: String): String {
     return parse(input).toNode().name
+}
+
+private fun correctedWeight(input: String): Int {
+    val root = parse(input).toNode()
+    val weightMap = mutableMapOf<Node, Int>()
+    fun walk(n: Node, depth:Int = 0) {
+        n.kids.forEach { walk(it, depth + 1) }
+        val kidWeight = if (n.kids.isEmpty()) 0 else n.kids.map { weightMap[it]!! }.sum()
+        weightMap.put(n, n.weight + kidWeight)
+    }
+    walk(root)
+    val (weird, others) = weightMap
+            .filter { (n, _) ->
+                n.kids.isNotEmpty() && n.kids
+                        .map {
+                            weightMap[it]!!
+                        }
+                        .distinct()
+                        .size != 1
+            }
+            .keys
+            .first()    // we can do this because the tree traversal is
+                        // depth-first, the map maintains insertion order, and
+                        // we want the leafiest node
+            .kids
+            .map { Pair(weightMap[it]!!, it) }
+            .groupBy { it.first }
+            .map { (w, ns) ->
+                Pair(w, ns.map { it.second })
+            }
+            .sortedBy {
+                it.second.size
+            }
+    return weird.second.first().weight + (others.first - weird.first)
 }
