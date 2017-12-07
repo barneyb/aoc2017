@@ -18,7 +18,7 @@ fun <I, R> check(functionUnderTest:(I) -> R) = { input:I, expected:R ->
         if (vi.length > 100) {
             vi = vi.substring(0, 90) + "...' (${vi.length - 90} chars truncated)"
         }
-        println("Expected '$expected' but got '$actual' (from $vi)")
+        println("Expected '$expected' but got '$actual' (from ${vi.replace("\n", "\n    ")})")
     }
 }
 
