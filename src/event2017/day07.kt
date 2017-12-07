@@ -60,26 +60,27 @@ private data class Node(
 )
 
 private fun List<Program>.toNode(): Node {
-    val nameMap = mutableMapOf<String, Node>()
-    var remaining = this
-    while (remaining.isNotEmpty()) {
-        remaining = remaining.filter { p ->
-            if (p.kids.all({nameMap.containsKey(it)})) {
-                val n = Node(
-                        p.name,
-                        p.weight,
-                        p.kids.map {
-                            nameMap.remove(it)!!
-                        }
-                )
-                nameMap[n.name] = n
-                false
-            } else {
-                true
+    return generateSequence(Pair(mapOf<String, Node>(), this), { (nameMap, remaining) ->
+        val (leaves, branches) = remaining.partition {
+            it.kids.all {
+                nameMap.containsKey(it)
             }
         }
-    }
-    return nameMap.values.first()
+        Pair(leaves.fold(nameMap, { nm, p ->
+            val n = Node(
+                    p.name,
+                    p.weight,
+                    p.kids.map {
+                        nameMap.get(it)!!
+                    }
+            )
+            nm.filterKeys{ k ->
+                ! p.kids.contains(k)
+            }.plus(Pair(p.name, n))
+        }), branches)
+    }).dropWhile {
+        it.second.isNotEmpty()
+    }.first().first.values.first()
 }
 
 private fun nameOfRoot(input: String): String {
