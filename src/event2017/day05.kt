@@ -51,5 +51,5 @@ private fun stepsInternal(input:String, munge:(Int) -> Int):Int {
         pointer += jump
         steps += 1
     }
-    return steps;
+    return steps
 }
