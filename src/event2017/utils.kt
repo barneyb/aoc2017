@@ -12,13 +12,17 @@ fun banner(label:String) {
 }
 
 fun <I, R> check(functionUnderTest:(I) -> R) = { input:I, expected:R ->
+    val startedAt = System.currentTimeMillis()
     val actual = functionUnderTest(input)
+    val elapsed = System.currentTimeMillis() - startedAt
     if (actual != expected) {
         var vi = "'" + input.toString() + "'"
         if (vi.length > 100) {
             vi = vi.substring(0, 90) + "...' (${vi.length - 90} chars truncated)"
         }
-        println("Expected '$expected' but got '$actual' (from ${vi.replace("\n", "\n    ")})")
+        println("FAIL: Expected '$expected' but got '$actual' (from ${vi.replace("\n", "\n    ")}) ($elapsed ms)")
+    } else {
+        println("PASS ($elapsed ms)")
     }
 }
 
