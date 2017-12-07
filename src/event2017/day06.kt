@@ -23,30 +23,37 @@ fun main(args: Array<String>) {
     println("answer: " + cyclesInLoop(input))
 }
 
-fun cyclesToReentrance(input:String):Int {
-    val banks = parse(input)
-    val l = banks.size
-    val uniquer = mutableSetOf<String>()
-    var counter = 0
-    do {
-        uniquer.add(banks.toString())
-        var i = banks.indexOf(banks.max()!!)
-        var blocks = banks[i]
+private fun gen(input:String):Sequence<IntArray> {
+    return generateSequence(parse(input).toIntArray(), { prev ->
+        val banks = prev.clone()
+        val l = banks.size
+        val i = banks.indexOf(banks.max()!!)
+        val blocks = banks[i]
         banks[i] = 0
-        while (blocks > 0) {
-            i += 1
-            banks[i % l] += 1
-            blocks -= 1
-        }
-        counter += 1
-    } while (! uniquer.contains(banks.toString()))
-    return counter
+        (i + 1).rangeTo(i + blocks)
+                .forEach {
+                    banks[it % l] += 1
+                }
+        banks
+    })
 }
 
-fun cyclesInLoop(input:String):Int {
+private fun cyclesToReentrance(input:String):Int {
+    val uniquer = mutableSetOf<String>()
+    return gen(input)
+            .map { it.joinToString(",") }
+            .takeWhile { banks ->
+                val result = ! uniquer.contains(banks)
+                uniquer.add(banks)
+                result
+            }
+            .count()
+}
+
+private fun cyclesInLoop(input:String):Int {
     return input.length
 }
 
 private fun parse(input: String) =
-        input.split('\t').map({ it.toInt() }).toMutableList()
+        input.split('\t').map({ it.toInt() })
 
