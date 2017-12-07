@@ -11,11 +11,14 @@ fun banner(label:String) {
     println("= $label ".padEnd(80, '='))
 }
 
+private var check_counter = 0
+
 fun <I, R> check(functionUnderTest:(I) -> R): (I, R) -> Unit {
+    val check = ++check_counter
     var run = 0
     return { input:I, expected:R ->
         run += 1
-        print("${run.toString().padStart(3)}: ")
+        print("${check.toString().padStart(2)}.${run.toString().padEnd(3)}: ")
         val startedAt = System.currentTimeMillis()
         val actual = functionUnderTest(input)
         val elapsed = System.currentTimeMillis() - startedAt
