@@ -31,11 +31,11 @@ fun main(args: Array<String>) {
     println("answer: " + captcha2(input))
 }
 
-val captcha = captchaFactory { it.last().toString().plus(it) }
+private val captcha = captchaFactory { it.last().toString().plus(it) }
 
-val captcha2 = captchaFactory { it.substring(it.length / 2).plus(it) }
+private val captcha2 = captchaFactory { it.substring(it.length / 2).plus(it) }
 
-fun captchaFactory(pairer:(String) -> String) = { input:String ->
+private fun captchaFactory(pairer:(String) -> String) = { input:String ->
     input.zip(pairer(input))
             .filter { it.first == it.second }
             .map { it.first }

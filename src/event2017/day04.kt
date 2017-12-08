@@ -29,7 +29,7 @@ fun main(args: Array<String>) {
     println("answer: " + countValid2(input))
 }
 
-fun countValid(input:String):Int {
+private fun countValid(input:String):Int {
     return process(input) { it }
 }
 

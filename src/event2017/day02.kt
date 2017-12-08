@@ -45,7 +45,7 @@ private fun parse(sheet: String):Sheet {
             }
 }
 
-val checksumFactory = { chksum: (Row) -> Int ->
+private val checksumFactory = { chksum: (Row) -> Int ->
     { sheet: String ->
         parse(sheet)
                 .map(chksum)
@@ -53,11 +53,11 @@ val checksumFactory = { chksum: (Row) -> Int ->
     }
 }
 
-val checksum1 = checksumFactory { row ->
+private val checksum1 = checksumFactory { row ->
     row.max()!! - row.min()!!
 }
 
-val checksum2 = checksumFactory { row ->
+private val checksum2 = checksumFactory { row ->
     val sorted = row.distinct().sorted()
     val p = sorted.mapIndexed { i, a ->
         Pair(a, sorted.drop(i + 1))
