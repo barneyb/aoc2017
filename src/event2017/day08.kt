@@ -19,6 +19,12 @@ fun main(args: Array<String>) {
     partOne(exampleInput, 1)
     partOne(input, 3880)
     println("answer: " + maxFinalValue(input))
+
+    banner("part one")
+    val partTwo = check(::maxInterimValue)
+    partTwo(exampleInput, 10)
+    partTwo(input, 5035)
+    println("answer: " + maxInterimValue(input))
 }
 
 private enum class Arithmetic(val text: String, val op: (Int, Int) -> Int) {
@@ -98,3 +104,9 @@ private fun parse(input: String): List<Instruction> =
 
 private fun maxFinalValue(input: String): Int =
         parse(input).fold(Processor(), { p, i -> i.eval(p) }).maxValue()
+
+private fun maxInterimValue(input:String): Int =
+        parse(input).fold(Pair(Processor(), 0), { (p, max), i ->
+            val np = i.eval(p)
+            Pair(np, Math.max(max, np.maxValue()))
+        }).second
