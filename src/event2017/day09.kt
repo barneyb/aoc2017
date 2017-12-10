@@ -22,21 +22,32 @@ fun main(args: Array<String>) {
     partOne("{{<a!>},{<a!>},{<a!>},{<ab>}}", 3)
     partOne(input, 10616)
     println("answer: " + scoreGroups(input))
+
+    banner("part two")
+    val partTwo = check(::countGarbage)
+    partTwo("<>", 0)
+    partTwo("<random characters>", 17)
+    partTwo("<{o\"i!a,<{i<a>", 10)
+    partTwo(input, 5101)
+    println("answer: " + countGarbage(input))
 }
 
-private fun removeGarbage(input: String): String {
+private fun removeGarbage(input: String): Pair<String, Int> {
     var inGarbage = false
-    var escaped = false
-    return input.filter { c ->
-        if (escaped) {
-            escaped = false
+    var canceled = false
+    var garbageChars = 0
+    return Pair(input.filter { c ->
+        if (canceled) {
+            canceled = false
             false
         } else if (c == '!') {
-            escaped = true
+            canceled = true
             false
         } else if (inGarbage) {
             if (c == '>') {
                 inGarbage = false
+            } else {
+                garbageChars += 1
             }
             false
         } else {
@@ -47,11 +58,11 @@ private fun removeGarbage(input: String): String {
                 true
             }
         }
-    }
+    }, garbageChars)
 }
 
-private fun scoreGroups(input: String): Int {
-    return removeGarbage(input).fold(Pair(0, 0), { p, c ->
+private fun scoreGroups(input: String) =
+    removeGarbage(input).first.fold(Pair(0, 0), { p, c ->
         if (c == '{')
             Pair(p.first + 1, p.second)
         else if (c == '}')
@@ -59,4 +70,6 @@ private fun scoreGroups(input: String): Int {
         else
             p
     }).second
-}
+
+private fun countGarbage(input: String) =
+        removeGarbage(input).second
