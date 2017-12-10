@@ -40,23 +40,26 @@ fun main(args: Array<String>) {
 //    println("answer: " + steps2pure(input))
 }
 
+@Suppress("ArrayInDataClass")
 private data class ProcState(
         val ins: IntArray,
         val increment: (Int) -> Int,
         val pointer: Int = 0
 )
 
-private fun IntArray.munge(index: Int, delta: Int):IntArray {
-    val result = clone()
-    result[index] += delta
-    return result
-}
+private fun IntArray.munge(index: Int, delta: Int) =
+        IntArray(size, { i ->
+            if (i == index)
+                this[i] + delta
+            else
+                this[i]
+        })
 
 private fun ProcState.incomplete() =
         pointer >= 0 && pointer < ins.size
 
 private fun ProcState.tick():ProcState {
-    val offset = ins[pointer];
+    val offset = ins[pointer]
     return ProcState(ins.munge(pointer, increment(offset)), increment, pointer + offset)
 }
 
