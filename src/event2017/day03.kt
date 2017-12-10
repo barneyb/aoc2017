@@ -67,23 +67,27 @@ private data class Cursor(
     constructor(p:Point) : this(p.x, p.y)
 }
 
-private typealias Grid = Pair<Int, Array<Int>>
+@Suppress("ArrayInDataClass")
+private data class Grid(
+        val dim: Int,
+        val data: Array<Int>
+)
 
 private operator fun Grid.get(x:Int, y:Int):Int {
-    return second[x + y * first]
+    return data[x + y * dim]
 }
 
 private operator fun Grid.set(x:Int, y:Int, n:Int) {
-    second[x + y * first] = n
+    data[x + y * dim] = n
 }
 
 private fun Grid.origin():Point {
-    return Point(first / 2, first / 2)
+    return Point(dim / 2, dim / 2)
 }
 
 private fun makeGrid(input:Int):Grid {
     val dim = Math.sqrt(input.toDouble()).toInt() + 2
-    return Pair(dim, Array(dim * dim, { 0 }))
+    return Grid(dim, Array(dim * dim, { 0 }))
 }
 
 private fun spiral(grid:Grid, dropUntil:Int, nWork:(Cursor) -> Cursor):Cursor {
