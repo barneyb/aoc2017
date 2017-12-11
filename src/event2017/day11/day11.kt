@@ -15,6 +15,15 @@ fun main(args: Array<String>) {
     partOne("se,sw,se,sw,sw", 3)
     partOne(input, 764)
     println("answer: " + stepsAway(input))
+
+    banner("part 2")
+    val partTwo = check(::maxStepsAway)
+    partTwo("ne,ne,ne", 3)
+    partTwo("ne,ne,sw,sw", 2)
+    partTwo("ne,ne,s,s", 2)
+    partTwo("se,sw,se,sw,sw", 3)
+    partTwo(input, 1532)
+    println("answer: " + maxStepsAway(input))
 }
 
 val combines = listOf(
@@ -72,4 +81,13 @@ private fun stepsAwayInternal(steps:List<String>): Int {
             gs
     })
     return canceled.map { (_, count) -> count }.sum()
+}
+
+fun maxStepsAway(input: String): Int {
+    val agg = input.split(",")
+            .fold(Pair(listOf<String>(), 0), { (path, max), step ->
+                val afterStep = path.plus(step)
+                Pair(afterStep, Math.max(max, stepsAwayInternal(afterStep)))
+            })
+    return agg.second
 }
