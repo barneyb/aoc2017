@@ -35,9 +35,12 @@ val cancels = listOf(
         Pair("nw", "se")
 )
 
-fun stepsAway(input: String): Int {
-    val groups = input
-            .split(",")
+fun stepsAway(input: String) =
+        stepsAwayInternal(input
+                .split(","))
+
+private fun stepsAwayInternal(steps:List<String>): Int {
+    val groups = steps
             .groupBy { it }
             .mapValues { (_, v) -> v.size }
     val combined = combines.fold(groups, { gs, pp ->
@@ -53,7 +56,6 @@ fun stepsAway(input: String): Int {
                     .mapValues { (dir, count) ->
                         if (dir == p.first || dir == p.second) count - max else count
                     }
-
         else
             gs
     })
