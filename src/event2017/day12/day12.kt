@@ -21,28 +21,39 @@ fun main(args: Array<String>) {
     println("answer: " + zerosGroupSize(input))
 }
 
-fun zerosGroupSize(input: String): Int {
-    val nodeMap = input.split("\n")
-            .fold(mapOf<Int, List<Int>>()) { map, it ->
-                val parts = it.split("<->").map {
-                    it.trim()
-                }
-                val id = parts[0].toInt()
-                val kids = parts[1].split(",").map { it.trim().toInt() }
-                map + Pair(id, kids)
-            }
-    val visited = mutableSetOf<Int>()
-    var seed = listOf(0)
-    while (true) {
-        visited.addAll(seed)
-        val nextSeed = seed.flatMap { id ->
-            nodeMap[id]!!
-        }.filter {
-            ! visited.contains(it)
-        }
-        if (nextSeed.isEmpty())
-            break
-        seed = nextSeed
-    }
-    return visited.size
+fun zerosGroupSize(input: String) =
+        parse(input).groupFrom(0).size
+
+typealias NodeMap = Map<Int, List<Int>>
+
+data class Generation(
+        val seed: Collection<Int>,
+        val visited: Set<Int> = setOf<Int>()
+) {
+    constructor(seed: Int) : this(listOf(seed)) {}
 }
+
+private fun NodeMap.groupFrom(start: Int) =
+        generateSequence(Generation(start), { gen ->
+            val nextVisited = gen.visited + gen.seed
+            val nextSeed = gen.seed.flatMap { id ->
+                get(id)!!
+            }.filter {
+                !nextVisited.contains(it)
+            }
+            Generation(nextSeed, nextVisited)
+        })
+                .dropWhile { it.seed.isNotEmpty() }
+                .first()
+                .visited
+
+private fun parse(input: String) =
+        input.split("\n")
+                .fold(mapOf<Int, List<Int>>()) { map, it ->
+                    val parts = it.split("<->").map {
+                        it.trim()
+                    }
+                    val id = parts[0].toInt()
+                    val kids = parts[1].split(",").map { it.trim().toInt() }
+                    map + Pair(id, kids)
+                }
