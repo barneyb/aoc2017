@@ -15,14 +15,22 @@ fun main(args: Array<String>) {
             "6 <-> 4, 5"
 
     banner("part 1")
-    val partOne = check(::zerosGroupSize)
+    val partOne = check(zerosGroupSize)
     partOne(exampleInput, 6)
     partOne(input, 306)
     println("answer: " + zerosGroupSize(input))
+
+    banner("bidirectionality")
+    check(groupSize(5))(exampleInput, 6)
 }
 
-fun zerosGroupSize(input: String) =
-        parse(input).groupFrom(0).size
+val groupSize = { id: Int ->
+    { input: String ->
+        parse(input).groupFrom(id).size
+    }
+}
+
+val zerosGroupSize = groupSize(0)
 
 typealias NodeMap = Map<Int, List<Int>>
 
