@@ -28,8 +28,9 @@ def get_register(name):
     return registers[name]
 
 def increment_register(name, delta):
-    registers[name] = get_register(name) + delta
-    return registers[name]
+    val = get_register(name) + delta
+    registers[name] = val
+    return val
 
 print "get zero: " + str(get_register("fred"))
 print "inc six: " + str(increment_register("fred", 6))
@@ -38,20 +39,19 @@ print "get twelve: " + str(get_register("fred"))
 
 maxWorkingVal = None
 
-for (tgt, offset, check, op, val) in instructions:
+for (targetRegister, offset, checkRegister, op, comp) in instructions:
+    checkValue = get_register(checkRegister)
     if op == ">":
-        doIt = get_register(check) > val
+        doIt = checkValue > comp
     elif op == "<":
-        doIt = get_register(check) < val
+        doIt = checkValue < comp
     elif op == "==":
-        doIt = get_register(check) == val
+        doIt = checkValue == comp
     elif op == "!=":
-        doIt = get_register(check) != val
-    else:
-        print "um. '" + op + "' isn't recognized"
+        doIt = checkValue != comp
 
     if doIt:
-        newVal = increment_register(tgt, offset)
+        newVal = increment_register(targetRegister, offset)
         if maxWorkingVal == None or newVal > maxWorkingVal:
             maxWorkingVal = newVal
 
