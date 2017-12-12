@@ -37,7 +37,9 @@ while str(banks) not in history:    # loop while we have a new state
     history.add(str(banks))         # add it to the history
     reallocate(banks)
 
-# broke out, so must have found a dupe
+# broke out, so must have found a dupe. length of history is how many cycles. We
+# could have used a `count` variable to track the iterations, but no sense in
+# doing the work a second time when our `history` set is already doing it.
 
 answer = len(history)
 
