@@ -22,6 +22,12 @@ fun main(args: Array<String>) {
 
     banner("bidirectionality")
     check(groupSize(5))(exampleInput, 6)
+
+    banner("part 2")
+    val partTwo = check(::groupCount)
+    partTwo(exampleInput, 2)
+    partTwo(input, 200)
+    println("answer: " + groupCount(input))
 }
 
 val groupSize = { id: Int ->
@@ -31,6 +37,13 @@ val groupSize = { id: Int ->
 }
 
 val zerosGroupSize = groupSize(0)
+
+fun groupCount(input: String) =
+        generateSequence(parse(input), { map ->
+            map - map.groupFrom(map.keys.first())
+        }).takeWhile {
+            it.isNotEmpty()
+        }.count()
 
 typealias NodeMap = Map<Int, List<Int>>
 
