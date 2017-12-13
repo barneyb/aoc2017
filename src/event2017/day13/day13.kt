@@ -21,7 +21,7 @@ fun main(args: Array<String>) {
 
 fun severity(input: String) =
         parse(input)
-                .filter { it.depth % it.period == 0 }
+                .filter { it.caught() }
                 .sumBy { it.severity }
 
 data class Layer(
@@ -37,6 +37,8 @@ data class Layer(
             depth * range
     )
 }
+
+fun Layer.caught(delay: Int = 0) = (delay + depth) % period == 0
 
 private fun parse(input: String): List<Layer> {
     return input.split("\n")
