@@ -17,6 +17,12 @@ fun main(args: Array<String>) {
     partOne(input, 1728)
     println("answer: " + severity(input))
 
+    banner("part 2")
+    val partTwo = check(::delay)
+    partTwo(exampleInput, 10)
+    partTwo(input, 3946838)
+    println("answer: " + delay(input))
+
 }
 
 fun severity(input: String) =
@@ -50,3 +56,15 @@ private fun parse(input: String): List<Layer> {
                 Layer(d, r)
             }
 }
+
+fun delay(input: String) =
+        generateSequence(Pair(0, parse(input)), { p ->
+            Pair(p.first + 1, p.second)
+        })
+                .dropWhile { p ->
+                    p.second.any {
+                        it.caught(p.first)
+                    }
+                }
+                .first()
+                .first
