@@ -51,7 +51,7 @@ data class Generation(
         val seed: Collection<Int>,
         val visited: Set<Int> = setOf<Int>()
 ) {
-    constructor(seed: Int) : this(listOf(seed)) {}
+    constructor(seed: Int) : this(listOf(seed))
 }
 
 private fun NodeMap.groupFrom(start: Int) =
