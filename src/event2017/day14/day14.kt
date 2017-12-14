@@ -25,7 +25,8 @@ fun binaryGrid(input: String) =
                                         .toInt(16)
                                         .toString(2)
                                         .padStart(4, '0')
-                            }.joinToString("")
+                            }
+                            .joinToString("")
                 }
 
 fun blocksUsed(input: String) =
