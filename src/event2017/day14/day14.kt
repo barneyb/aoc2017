@@ -20,6 +20,10 @@ fun main(args: Array<String>) {
     partTwo(exampleInput, 1242)
     partTwo(input, 1182)
     println("answer: " + regionCount(input))
+
+    banner("part 2 (pure)")
+    val partTwoPure = check(::regionCountPure)
+    partTwoPure(input, 1182)
 }
 
 val GRID_DIM = 128
@@ -70,6 +74,32 @@ fun regionCount(input: String): Int {
                 .dropWhile { it.isNotEmpty() }
                 .first() // to consume it
         grid
+    })
+            .takeWhile { it.isNotEmpty() }
+            .count()
+}
+
+
+fun regionCountPure(input: String): Int {
+    val rawGrid = mutableSetOf<Point>()
+    binaryGrid(input)
+            .forEachIndexed({ y, hash ->
+                hash.forEachIndexed({ x, c ->
+                    if (c == '1')
+                        rawGrid.add(Point(x, y))
+                })
+            })
+
+    return generateSequence(rawGrid.toSet(), { grid ->
+        generateSequence(Pair(grid, setOf(grid.first())), { (grid, unchecked) ->
+            unchecked.fold(Pair(grid, setOf<Point>()), { (grid, next), m ->
+                Pair(grid - m, next + m.adjacent()
+                        .filter { grid.contains(it) })
+            })
+        })
+                .dropWhile { it.second.isNotEmpty() }
+                .first()
+                .first
     })
             .takeWhile { it.isNotEmpty() }
             .count()
