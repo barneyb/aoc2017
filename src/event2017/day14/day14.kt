@@ -62,7 +62,7 @@ fun regionCount(input: String): Int {
             .forEachIndexed({ y, hash ->
                 hash.forEachIndexed({ x, c ->
                     if (c == '1')
-                        rawGrid.add(x * GRID_DIM + y)
+                        rawGrid.add(Point(x, y).toIndex())
                 })
             })
 
