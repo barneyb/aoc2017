@@ -81,16 +81,19 @@ fun regionCount(input: String): Int {
 
 
 fun regionCountPure(input: String): Int {
-    val rawGrid = mutableSetOf<Point>()
-    binaryGrid(input)
-            .forEachIndexed({ y, hash ->
-                hash.forEachIndexed({ x, c ->
-                    if (c == '1')
-                        rawGrid.add(Point(x, y))
-                })
-            })
+    val rawGrid = binaryGrid(input)
+            .mapIndexed { y, hash ->
+                hash.toList()
+                        .zip(0..hash.length)
+                        .filter { (c, _) -> c == '1' }
+                        .map { (_, x) ->
+                            Point(x, y)
+                        }
+            }
+            .flatten()
+            .toSet()
 
-    return generateSequence(rawGrid.toSet(), { grid ->
+    return generateSequence(rawGrid, { grid ->
         generateSequence(Pair(grid, setOf(grid.first())), { (grid, unchecked) ->
             unchecked.fold(Pair(grid, setOf<Point>()), { (grid, next), m ->
                 Pair(grid - m, next + m.adjacent()
