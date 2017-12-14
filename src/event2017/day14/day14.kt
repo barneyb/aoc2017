@@ -42,10 +42,6 @@ fun blocksUsed(input: String) =
             it.count { it == '1' }
         }.sum()
 
-fun Int.toPoint() = Point(this / GRID_DIM, this % GRID_DIM)
-
-fun Point.toIndex() = this.x * GRID_DIM + this.y
-
 fun Point.inGrid() = this.x >= 0 && this.y >= 0 &&
         this.x < GRID_DIM && this.y < GRID_DIM
 
@@ -57,12 +53,12 @@ fun Point.adjacent() = listOf(
 )
 
 fun regionCount(input: String): Int {
-    val rawGrid = mutableSetOf<Int>()
+    val rawGrid = mutableSetOf<Point>()
     binaryGrid(input)
             .forEachIndexed({ y, hash ->
                 hash.forEachIndexed({ x, c ->
                     if (c == '1')
-                        rawGrid.add(Point(x, y).toIndex())
+                        rawGrid.add(Point(x, y))
                 })
             })
 
@@ -71,10 +67,8 @@ fun regionCount(input: String): Int {
         generateSequence(setOf(start), { unchecked ->
             unchecked.fold(setOf(), { next, m ->
                 grid.remove(m)
-                next + m.toPoint()
-                        .adjacent()
+                next + m.adjacent()
                         .filter { it.inGrid() }
-                        .map { it.toIndex() }
                         .filter { grid.contains(it) }
             })
         })
