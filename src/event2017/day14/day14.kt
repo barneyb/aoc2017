@@ -1,5 +1,6 @@
 package event2017.day14
 
+import event2017.Point
 import event2017.banner
 import event2017.check
 import event2017.day10.knotHash
@@ -14,10 +15,17 @@ fun main(args: Array<String>) {
     partOne(input, 8140)
     println("answer: " + blocksUsed(input))
 
+    banner("part 2")
+    val partTwo = check(::regionCount)
+    partTwo(exampleInput, 1242)
+    partTwo(input, 1182)
+    println("answer: " + regionCount(input))
 }
 
+val GRID_DIM = 128
+
 fun binaryGrid(input: String) =
-        IntRange(0, 127)
+        IntRange(0, GRID_DIM - 1)
                 .map {
                     knotHash(input + "-" + it)
                             .map { c ->
@@ -33,3 +41,54 @@ fun blocksUsed(input: String) =
         binaryGrid(input).map {
             it.count { it == '1' }
         }.sum()
+
+fun Int.toPoint() = Point(this / GRID_DIM, this % GRID_DIM)
+
+fun Point.toIndex() = this.x * GRID_DIM + this.y
+
+fun Point.inGrid() = this.x >= 0 && this.y >= 0 &&
+        this.x < GRID_DIM && this.y < GRID_DIM
+
+fun Point.adjacent() = listOf(
+        up(),
+        down(),
+        left(),
+        right()
+)
+
+fun regionCount(input: String): Int {
+    val grid = IntRange(0, GRID_DIM * GRID_DIM - 1).map { false }.toMutableList()
+    binaryGrid(input)
+            .forEachIndexed({ y, hash ->
+                hash.forEachIndexed({ x, c ->
+                    grid[x * GRID_DIM + y] = c == '1'
+                })
+            })
+    var regionCount = 0
+    while (true) {
+        val start = grid.indexOf(true)
+        if (start < 0) {
+            break
+        }
+        regionCount += 1
+
+        var uncheckedMembers = listOf(start.toPoint())
+        while (uncheckedMembers.isNotEmpty()) {
+            val next = mutableListOf<Point>()
+            for (m in uncheckedMembers) {
+                grid[m.toIndex()] = false
+                next.addAll(m
+                        .adjacent()
+                        .filter {
+                            it.inGrid()
+                        }
+                        .filter {
+                            grid[it.toIndex()]
+                        }
+                )
+            }
+            uncheckedMembers = next
+        }
+    }
+    return regionCount
+}
