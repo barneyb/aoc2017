@@ -25,7 +25,7 @@ fun main(args: Array<String>) {
 val GRID_DIM = 128
 
 fun binaryGrid(input: String) =
-        IntRange(0, GRID_DIM - 1)
+        (0 until GRID_DIM)
                 .map {
                     knotHash(input + "-" + it)
                             .map { c ->
