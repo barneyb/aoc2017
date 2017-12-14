@@ -54,29 +54,28 @@ fun Point.adjacent() = listOf(
 )
 
 fun regionCount(input: String): Int {
-    val rawGrid = mutableSetOf<Point>()
+    val grid = mutableSetOf<Point>()
     binaryGrid(input)
             .forEachIndexed({ y, hash ->
                 hash.forEachIndexed({ x, c ->
                     if (c == '1')
-                        rawGrid.add(Point(x, y))
+                        grid.add(Point(x, y))
                 })
             })
 
-    return generateSequence(rawGrid, { grid ->
-        generateSequence(setOf(grid.first()), { unchecked ->
-            unchecked.fold(setOf(), { next, m ->
+    var regionCount = 0
+    while (grid.isNotEmpty()) {
+        regionCount += 1
+        var edges = setOf(grid.first())
+        while (edges.isNotEmpty()) {
+            edges = edges.fold(setOf(), { next, m ->
                 grid.remove(m)
                 next + m.adjacent()
                         .filter { grid.contains(it) }
             })
-        })
-                .dropWhile { it.isNotEmpty() }
-                .first() // to consume it
-        grid
-    })
-            .takeWhile { it.isNotEmpty() }
-            .count()
+        }
+    }
+    return regionCount
 }
 
 
