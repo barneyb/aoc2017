@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
 
 }
 
-fun blocksUsed(input: String) =
+fun binaryGrid(input: String) =
         IntRange(0, 127)
                 .map {
                     knotHash(input + "-" + it)
@@ -24,10 +24,10 @@ fun blocksUsed(input: String) =
                                 c.toString()
                                         .toInt(16)
                                         .toString(2)
-                                        .count {
-                                            it == '1'
-                                        }
-                            }
-                            .sum()
+                            }.joinToString("")
                 }
-                .sum()
+
+fun blocksUsed(input: String) =
+        binaryGrid(input).map {
+            it.count { it == '1' }
+        }.sum()
