@@ -87,7 +87,7 @@ private fun Int.toHex():String {
     return if (s.length == 1) "0" + s else s
 }
 
-private fun knotHash(input: String): String {
+fun knotHash(input: String): String {
     val sixteen = IntRange(0, 15)
     val sixtyfour = IntRange(0, 63)
     val lengths = parse2(input)
