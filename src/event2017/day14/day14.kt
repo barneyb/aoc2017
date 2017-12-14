@@ -42,9 +42,6 @@ fun blocksUsed(input: String) =
             it.count { it == '1' }
         }.sum()
 
-fun Point.inGrid() = this.x >= 0 && this.y >= 0 &&
-        this.x < GRID_DIM && this.y < GRID_DIM
-
 fun Point.adjacent() = listOf(
         up(),
         down(),
@@ -68,7 +65,6 @@ fun regionCount(input: String): Int {
             unchecked.fold(setOf(), { next, m ->
                 grid.remove(m)
                 next + m.adjacent()
-                        .filter { it.inGrid() }
                         .filter { grid.contains(it) }
             })
         })
