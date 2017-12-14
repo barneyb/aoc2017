@@ -29,4 +29,5 @@ fun blocksUsed(input: String) =
                                         }
                             }
                             .sum()
-                }.sum()
+                }
+                .sum()
