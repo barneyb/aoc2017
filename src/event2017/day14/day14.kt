@@ -68,10 +68,9 @@ fun regionCount(input: String): Int {
     return generateSequence(rawGrid, { grid ->
         val start = grid.indexOf(true)
         generateSequence(setOf(start), { unchecked ->
-            var next = setOf<Int>()
-            for (m in unchecked) {
+            unchecked.fold(setOf(), { next, m ->
                 grid[m] = false
-                next += (m.toPoint()
+                next + m.toPoint()
                         .adjacent()
                         .filter {
                             it.inGrid()
@@ -82,9 +81,7 @@ fun regionCount(input: String): Int {
                         .filter {
                             grid[it]
                         }
-                        )
-            }
-            next
+            })
         })
                 .dropWhile { it.isNotEmpty() }
                 .first() // to consume it
