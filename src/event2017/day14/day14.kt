@@ -72,12 +72,12 @@ fun regionCount(input: String): Int {
         }
         regionCount += 1
 
-        var uncheckedMembers = listOf(start.toPoint())
+        var uncheckedMembers = setOf(start.toPoint())
         while (uncheckedMembers.isNotEmpty()) {
-            val next = mutableListOf<Point>()
+            var next = setOf<Point>()
             for (m in uncheckedMembers) {
                 grid[m.toIndex()] = false
-                next.addAll(m
+                next += (m
                         .adjacent()
                         .filter {
                             it.inGrid()
