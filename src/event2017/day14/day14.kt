@@ -73,23 +73,15 @@ fun regionCount(input: String): Int {
                 grid.remove(m)
                 next + m.toPoint()
                         .adjacent()
-                        .filter {
-                            it.inGrid()
-                        }
-                        .map {
-                            it.toIndex()
-                        }
-                        .filter {
-                            grid.contains(it)
-                        }
+                        .filter { it.inGrid() }
+                        .map { it.toIndex() }
+                        .filter { grid.contains(it) }
             })
         })
                 .dropWhile { it.isNotEmpty() }
                 .first() // to consume it
         grid
     })
-            .takeWhile {
-                it.isNotEmpty()
-            }
+            .takeWhile { it.isNotEmpty() }
             .count()
 }
