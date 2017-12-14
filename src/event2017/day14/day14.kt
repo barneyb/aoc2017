@@ -72,10 +72,9 @@ fun regionCount(input: String): Int {
         }
         regionCount += 1
 
-        var uncheckedMembers = setOf(start)
-        while (uncheckedMembers.isNotEmpty()) {
+        generateSequence(setOf(start), { unchecked ->
             var next = setOf<Int>()
-            for (m in uncheckedMembers) {
+            for (m in unchecked) {
                 grid[m] = false
                 next += (m.toPoint()
                         .adjacent()
@@ -88,10 +87,12 @@ fun regionCount(input: String): Int {
                         .filter {
                             grid[it]
                         }
-                )
+                        )
             }
-            uncheckedMembers = next
-        }
+            next
+        })
+                .dropWhile { it.isNotEmpty() }
+                .first() // to consume it
     }
     return regionCount
 }
