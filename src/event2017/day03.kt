@@ -53,10 +53,15 @@ private enum class Direction {
     UP, DOWN, LEFT, RIGHT
 }
 
-private data class Point(
+data class Point(
     val x: Int,
     val y: Int
-)
+) {
+    fun up()    = Point(x, y + 1)
+    fun down()  = Point(x, y - 1)
+    fun left()  = Point(x + 1, y)
+    fun right() = Point(x - 1, y)
+}
 
 private data class Cursor(
     val x: Int,
