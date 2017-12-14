@@ -24,6 +24,7 @@ fun binaryGrid(input: String) =
                                 c.toString()
                                         .toInt(16)
                                         .toString(2)
+                                        .padStart(4, '0')
                             }.joinToString("")
                 }
 
