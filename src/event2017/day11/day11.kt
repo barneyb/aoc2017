@@ -60,8 +60,7 @@ private fun stepsAwayInternal(steps:List<String>): Int {
                 gs.getOrDefault(p.second, 0)
         )
         if (max > 0)
-            gs
-                    .plus(Pair(d, gs.getOrDefault(d, 0) + max))
+            (gs + Pair(d, gs.getOrDefault(d, 0) + max))
                     .mapValues { (dir, count) ->
                         if (dir == p.first || dir == p.second) count - max else count
                     }
@@ -86,7 +85,7 @@ private fun stepsAwayInternal(steps:List<String>): Int {
 fun maxStepsAway(input: String): Int {
     val agg = input.split(",")
             .fold(Pair(listOf<String>(), 0), { (path, max), step ->
-                val afterStep = path.plus(step)
+                val afterStep = path + step
                 Pair(afterStep, Math.max(max, stepsAwayInternal(afterStep)))
             })
     return agg.second

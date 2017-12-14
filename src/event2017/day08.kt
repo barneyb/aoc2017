@@ -77,7 +77,7 @@ private class Processor(val registers: Map<String, Int> = mapOf()) {
             registers.getOrDefault(register, 0)
 
     operator fun set(register:String, value:Int) =
-            Processor(registers.plus(Pair(register, value)))
+            Processor(registers + Pair(register, value))
 
     fun maxValue() =
             registers.values.max() ?: 0

@@ -31,9 +31,9 @@ fun main(args: Array<String>) {
     println("answer: " + captcha2(input))
 }
 
-private val captcha = captchaFactory { it.last().toString().plus(it) }
+private val captcha = captchaFactory { it.last() + it }
 
-private val captcha2 = captchaFactory { it.substring(it.length / 2).plus(it) }
+private val captcha2 = captchaFactory { it.substring(it.length / 2) + it }
 
 private fun captchaFactory(pairer:(String) -> String) = { input:String ->
     input.zip(pairer(input))

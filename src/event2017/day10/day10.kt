@@ -59,28 +59,25 @@ private fun tick(state: State, len: Int): State {
     val newList = if (state.pointer + len >= state.list.size) {
         val tailLen = state.list.size - state.pointer
         val headLen = len - tailLen
-        val sublist = state.list.subList(state.pointer, state.list.size)
-                .plus(state.list.subList(0, headLen))
+        val sublist = (state.list.subList(state.pointer, state.list.size)
+                + state.list.subList(0, headLen))
                 .reversed()
         val middle = state.list.subList(headLen, state.pointer)
-        sublist.subList(tailLen, sublist.size)
-                .plus(middle)
-                .plus(sublist.subList(0, tailLen))
+        sublist.subList(tailLen, sublist.size) + middle + sublist.subList(0, tailLen)
     } else {
         val prefix = state.list.subList(0, state.pointer)
         val sublist = state.list.subList(state.pointer, state.pointer + len)
                 .reversed()
         val suffix = state.list.subList(state.pointer + len, state.list.size)
-        prefix
-                .plus(sublist)
-                .plus(suffix)
+        prefix + sublist + suffix
     }
     return State(newList, (state.pointer + len + state.skip) % state.list.size, state.skip + 1)
 }
 
 private fun parse2(input: String) =
-        input.map { c -> c.toInt() }
-                .plus(listOf(17, 31, 73, 47, 23))
+        input.map { c ->
+            c.toInt()
+        } + listOf(17, 31, 73, 47, 23)
 
 private fun Int.toHex():String {
     val s = toString(16)

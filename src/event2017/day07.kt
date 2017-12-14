@@ -122,7 +122,7 @@ private fun List<Program>.toNode(): Node {
             )
             nm.filterKeys{ k ->
                 ! p.kids.contains(k)
-            }.plus(Pair(p.name, n))
+            } + Pair(p.name, n)
         }), branches)
     }).dropWhile {
         it.second.isNotEmpty()

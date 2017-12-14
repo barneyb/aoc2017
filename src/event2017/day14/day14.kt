@@ -21,9 +21,9 @@ fun main(args: Array<String>) {
     partTwo(input, 1182)
     println("answer: " + regionCount(input))
 
-//    banner("part 2 (pure)")
-//    val partTwoPure = check(::regionCountPure)
-//    partTwoPure(input, 1182)
+    banner("part 2 (pure)")
+    val partTwoPure = check(::regionCountPure)
+    partTwoPure(input, 1182)
 }
 
 val GRID_DIM = 128
