@@ -13,7 +13,7 @@ fun banner(label:String) {
 
 private var check_counter = 0
 
-fun <I, R> check(functionUnderTest:(I) -> R): (I, R) -> Unit {
+fun <I, R> check(functionUnderTest:(I) -> R): (I, R) -> Boolean {
     val check = ++check_counter
     var run = 0
     return { input:I, expected:R ->
@@ -22,16 +22,18 @@ fun <I, R> check(functionUnderTest:(I) -> R): (I, R) -> Unit {
         val startedAt = System.currentTimeMillis()
         val actual = functionUnderTest(input)
         val elapsed = System.currentTimeMillis() - startedAt
-        if (actual != expected) {
+        val pass = actual == expected
+        if (pass) {
+            print("PASS")
+        } else {
             var vi = "'" + input.toString() + "'"
             if (vi.length > 100) {
                 vi = vi.substring(0, 90) + "...' (${vi.length - 90} chars truncated)"
             }
             print("FAIL: Expected '$expected' but got '$actual' (from ${vi.replace("\n", "\n    ")})")
-        } else {
-            print("PASS")
         }
         println(" (${"%,d".format(elapsed)} ms)")
+        pass
     }
 }
 
