@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
     partTwoPure(input, 1182)
 }
 
-val GRID_DIM = 128
+const val GRID_DIM = 128
 
 fun binaryGrid(input: String) =
         (0 until GRID_DIM)
