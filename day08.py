@@ -49,6 +49,8 @@ for (targetRegister, offset, checkRegister, op, comp) in instructions:
         doIt = checkValue == comp
     elif op == "!=":
         doIt = checkValue != comp
+    else:
+        print "um. '" + op + "' isn't recognized"
 
     if doIt:
         newVal = increment_register(targetRegister, offset)
