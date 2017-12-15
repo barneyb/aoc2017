@@ -32,16 +32,13 @@ fun severity(input: String) =
 
 data class Layer(
         val depth: Int,
-        val range: Int,
-        val period: Int,
-        val severity: Int
+        val range: Int
 ) {
-    constructor(depth: Int, range: Int) : this(
-            depth,
-            range,
-            2 * (range - 2) + 2,
-            depth * range
-    )
+    val period
+        get() = 2 * (range - 2) + 2
+
+    val severity
+        get() = depth * range
 }
 
 fun Layer.caught(delay: Int = 0) = (delay + depth) % period == 0
