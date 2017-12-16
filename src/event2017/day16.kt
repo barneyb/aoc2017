@@ -13,13 +13,11 @@ fun main(args: Array<String>) {
     val exampleInput = "s1,x3/4,pe/b"
 
     banner("part 1")
-    val partOneExample = dance("abcde")
-    val assertOneExample = check(partOneExample)
-    val partOne = dance("abcdefghijklmnop")
-    val assertOne = check(partOne)
+    val assertOneExample = check(::exampleDance)
+    val assertOne = check(::dance)
     assertOneExample(exampleInput, "baedc")
     assertOne(input, "ebjpfdgmihonackl")
-    println("answer: " + partOne(input))
+    println("answer: " + dance(input))
 
 //    banner("part 2")
 //    val assertTwo = check(::partTwo)
@@ -67,13 +65,17 @@ private fun parse(input: String): List<Move> =
                 .split(',')
                 .map(::parseMove)
 
-private fun dance(dancers: String) =
-        { input: String ->
-            parse(input)
-                    .fold(dancers, { ds, m ->
-                        m(ds)
-                    })
-        }
+private fun exampleDance(input: String) =
+        aOneTwoThree("abcde", input)
+
+private fun dance(input: String) =
+        aOneTwoThree("abcdefghijklmnop", input)
+
+private fun aOneTwoThree(dancers: String, input: String) =
+        parse(input)
+                .fold(dancers, { ds, m ->
+                    m(ds)
+                })
 
 //private fun partTwo(input: String) =
 //        input.length
