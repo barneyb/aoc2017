@@ -28,42 +28,52 @@ fun main(args: Array<String>) {
 //    println("answer: " + partTwo(input))
 }
 
+typealias Move = (String) -> String
+
+private fun parseMove(move: String): Move {
+    if (move[0] == 's') {
+        val s = move.drop(1).toInt()
+        return { ds ->
+            val n = ds.length - s
+            ds.drop(n) + ds.take(n)
+        }
+    } else if (move[0] == 'x') {
+        val (a, b) = move.drop(1)
+                .split('/')
+                .map { it.toInt() }
+        return { ds ->
+            swapChar(ds, ds[a], ds[b])
+        }
+    } else if (move[0] == 'p') {
+        val (a, b) = move.drop(1)
+                .split('/')
+                .map { it[0] }
+        return { ds ->
+            swapChar(ds, a, b)
+        }
+    } else {
+        println("unknown move: '$move'")
+        return { ds -> ds }
+    }
+}
+
+private fun swapChar(ds: String, a: Char, b: Char) =
+        ds.replace(a, '.')
+                .replace(b, a)
+                .replace('.', b)
+
+private fun parse(input: String): List<Move> =
+        input.trim()
+                .split(',')
+                .map(::parseMove)
+
 private fun dance(dancers: String) =
         { input: String ->
-            input.trim()
-                    .split(',')
+            parse(input)
                     .fold(dancers, { ds, m ->
-                        when (m[0]) {
-                            's' -> {
-                                val n = ds.length -  m.drop(1).toInt()
-                                ds.drop(n) + ds.take(n)
-                            }
-                            'x' -> {
-                                val (a, b) = m.drop(1)
-                                        .split('/')
-                                        .map { it.toInt() }
-                                        .map { ds[it] }
-                                swapChar(ds, a, b)
-                            }
-                            'p' -> {
-                                val (a, b) = m.drop(1)
-                                        .split('/')
-                                        .map { it[0] }
-                                swapChar(ds, a, b)
-                            }
-                            else -> {
-                                println("unknown move: '$m'")
-                                ds
-                            }
-                        }
+                        m(ds)
                     })
         }
-
-private fun swapChar(ds: String, a: Char, b: Char): String {
-    return ds.replace(a, '.')
-            .replace(b, a)
-            .replace('.', b)
-}
 
 //private fun partTwo(input: String) =
 //        input.length
