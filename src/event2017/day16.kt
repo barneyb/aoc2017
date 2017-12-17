@@ -27,6 +27,7 @@ fun main(args: Array<String>) {
 //    println((1.0 * elapsed / 1000).toString() + " sec for " + rounds + " rounds; expecting " + 1.0 * elapsed / rounds * targetRounds / 1000.0 / 60.0 / 60.0 + " hrs for all " + targetRounds)
     // 134 hours initially
     // 82 hours with all the spins collapsed
+    // 1/4 hour with two moves
 
 //    banner("part 2")
 //    val assertTwo = check(::partTwo)
