@@ -29,6 +29,7 @@ fun main(args: Array<String>) {
     // 82 hours with all the spins collapsed
     // 1/4 hour with two moves
     // 71 hours with roundFactory
+    // 79 hours to make all Moves pure
 
 //    banner("part 2")
 //    val assertTwo = check(::partTwo)
@@ -57,10 +58,10 @@ private fun parseMove(cmd: String): Move {
                     .split('/')
                     .map { it.toInt() }
             return { dancers ->
-                val c = dancers[i]
-                dancers[i] = dancers[j]
-                dancers[j] = c
-                dancers
+                val next = dancers.copyOf()
+                next[i] = dancers[j]
+                next[j] = dancers[i]
+                next
             }
         }
         'p' -> {
@@ -70,10 +71,10 @@ private fun parseMove(cmd: String): Move {
             return { dancers ->
                 val i = dancers.indexOf(a)
                 val j = dancers.indexOf(b)
-                val c = dancers[i]
-                dancers[i] = dancers[j]
-                dancers[j] = c
-                dancers
+                val next = dancers.copyOf()
+                next[i] = dancers[j]
+                next[j] = dancers[i]
+                next
             }
         }
         else -> {
