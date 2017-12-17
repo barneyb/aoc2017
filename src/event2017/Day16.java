@@ -23,6 +23,7 @@ public class Day16 {
         System.out.println(rounds + " rounds: " + new String(dance(dancers, moves, rounds)));
         long elapsed = System.currentTimeMillis() - start;
         System.out.println((1.0 * elapsed / 1000) + " sec for " + rounds + " rounds; expecting " + (1.0 * elapsed / rounds * targetRounds / 1000 / 60 / 60) + " hrs for all " + targetRounds);
+        // estimate is 105 hours
     }
 
     private static char[] dance(char[] dancers, final Move[] moves, final int rounds) {
