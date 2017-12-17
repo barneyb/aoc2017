@@ -35,41 +35,46 @@ fun main(args: Array<String>) {
 typealias Move = (CharArray) -> CharArray
 
 private fun parseMove(move: String): Move {
-    if (move[0] == 's') {
-        val n = move.drop(1).toInt()
-        return { dancers ->
-            val next = CharArray(16)
-            // copy tail -> head
-            System.arraycopy(dancers, 16 - n, next, 0, n)
-            // copy head -> tail
-            System.arraycopy(dancers, 0, next, n, 16 - n)
-            next
+    when (move[0]) {
+        's' -> {
+            val n = move.drop(1).toInt()
+            return { dancers ->
+                val next = CharArray(16)
+                // copy tail -> head
+                System.arraycopy(dancers, 16 - n, next, 0, n)
+                // copy head -> tail
+                System.arraycopy(dancers, 0, next, n, 16 - n)
+                next
+            }
         }
-    } else if (move[0] == 'x') {
-        val (i, j) = move.drop(1)
-                .split('/')
-                .map { it.toInt() }
-        return { dancers ->
-            val c = dancers[i]
-            dancers[i] = dancers[j]
-            dancers[j] = c
-            dancers
+        'x' -> {
+            val (i, j) = move.drop(1)
+                    .split('/')
+                    .map { it.toInt() }
+            return { dancers ->
+                val c = dancers[i]
+                dancers[i] = dancers[j]
+                dancers[j] = c
+                dancers
+            }
         }
-    } else if (move[0] == 'p') {
-        val (a, b) = move.drop(1)
-                .split('/')
-                .map { it[0] }
-        return { dancers ->
-            val i = dancers.indexOf(a)
-            val j = dancers.indexOf(b)
-            val c = dancers[i]
-            dancers[i] = dancers[j]
-            dancers[j] = c
-            dancers
+        'p' -> {
+            val (a, b) = move.drop(1)
+                    .split('/')
+                    .map { it[0] }
+            return { dancers ->
+                val i = dancers.indexOf(a)
+                val j = dancers.indexOf(b)
+                val c = dancers[i]
+                dancers[i] = dancers[j]
+                dancers[j] = c
+                dancers
+            }
         }
-    } else {
-        println("unknown move: '$move'")
-        return { ds -> ds }
+        else -> {
+            println("unknown move: '$move'")
+            return { ds -> ds }
+        }
     }
 }
 
