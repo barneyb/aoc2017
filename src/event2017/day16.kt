@@ -86,11 +86,11 @@ private fun parse(input: String): List<Move> =
 private fun dance(input: String) =
         aOneTwoThree("abcdefghijklmnop".toCharArray(), input)
 
-private fun aOneTwoThree(dancers: CharArray, input: String, rounds: Int = 1): String {
+private fun aOneTwoThree(initialDancers: CharArray, input: String, rounds: Int = 1): String {
     val moves = parse(input)
-    return IntRange(1, rounds).fold(dancers, { ds, _ ->
-        moves.fold(ds, { ds, m ->
-            m(ds)
+    return IntRange(1, rounds).fold(initialDancers, { roundDancers, _ ->
+        moves.fold(roundDancers, { moveDancers, m ->
+            m(moveDancers)
         })
     }).joinToString("")
 }
