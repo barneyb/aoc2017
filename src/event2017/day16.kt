@@ -10,42 +10,17 @@ import java.io.File
 
 fun main(args: Array<String>) {
     val input = File("input/2017/day16.txt").readText()
-    val moves = parse(input)
-    val dancers = "abcdefghijklmnop"
 
     banner("part 1")
     val assertOne = check(::dance)
     assertOne(input, "ebjpfdgmihonackl")
     println("answer: " + dance(input))
 
-    banner("chaining")
-    val ninteen = aOneTwoThree(dancers, moves, expecteds.size - 1)
-    val twenty = aOneTwoThree(ninteen, moves)
-    val scan = aOneTwoThreeScan(dancers, moves, expecteds.size)
-    if (twenty != scan.last()) {
-        throw RuntimeException("final/scan don't agree")
-    }
-
-    for ((i, r) in scan.drop(1).withIndex()) {
-        val iString = (i + 1).toString().padStart(2, ' ')
-        if (r == expecteds[i]) {
-            println("round $iString passed: $r")
-        } else {
-            println("round $iString FAILED: $r (expecting ${expecteds[i]})")
-        }
-    }
-
-    banner("looped")
-    val scan2 = aOneTwoThreeScan(dancers, moves, 1_000_000_000 % 30)
-    for ((i, r) in scan2.withIndex()) {
-        println("${i.toString().padStart(2, ' ')}: $r")
-    }
-
 //    banner("profiling")
 //    val targetRounds = 1_000_000_000
 //    val rounds = 100_000
 //    val start = System.currentTimeMillis()
-//    println("$rounds rounds: " + aOneTwoThree(dancers, input, rounds))
+//    println("$rounds rounds: " + String(danceSequence("abcdefghijklmnop".toCharArray(), parse(input)).drop(rounds).first()))
 //    val elapsed = System.currentTimeMillis() - start
 //    println((1.0 * elapsed / 1000).toString() + " sec for " + rounds + " rounds; expecting " + 1.0 * elapsed / rounds * targetRounds / 1000.0 / 60.0 / 60.0 + " hrs for all " + targetRounds)
     // all with 100,000 rounds
@@ -54,6 +29,7 @@ fun main(args: Array<String>) {
     // 1/4 hour with two moves
     // 71 hours with roundFactory
     // 79 hours to make all Moves pure
+    // 80 hours with sequence generator
 
     banner("part 2")
     val assertTwo = check(::wholeDance)
@@ -108,6 +84,8 @@ private fun parseMove(cmd: String): Move {
 }
 
 private fun parse(input: String): List<Move> {
+    // this gobbledegook spreads the spins across subsequent exchanges
+    // and aggregates it all into a single spin at the end.
     val (cmds, offset) = input.trim()
             .split(',')
             .fold(Pair(mutableListOf<String>(), 0), { (cmds, o), cmd ->
@@ -138,53 +116,21 @@ private fun parse(input: String): List<Move> {
 }
 
 private fun dance(input: String) =
-        aOneTwoThree("abcdefghijklmnop", parse(input))
-
-private val expecteds = listOf(
-        "ebjpfdgmihonackl",
-        "dblfiegmjknpohac",
-        "anbfdigmcokeplhj",
-        "eocfhpgainmdkljb",
-        "fbpiengdjmoaklch",
-        "dnjceogmlphfkbia",
-        "pkjfebgacinhmold",
-        "aojifkgehcnbdlpm",
-        "apljchgdifnokbme",
-        "abocefghijklmndp",
-        "ebjpfcgmihdnaokl",
-        "cblfiegmjknpdhao",
-        "anbfcigmodkeplhj",
-        "edofhpgainmckljb",
-        "fbpiengcjmdakloh",
-        "cnjoedgmlphfkbia",
-        "pkjfebgaoinhmdlc",
-        "adjifkgehonbclpm",
-        "apljohgcifndkbme",
-        "abdoefghijklmncp"
-)
-
-private fun danceSequence(seed: CharArray, moves: List<Move>) =
-        generateSequence(seed, { roundDancers: CharArray ->
-            moves.fold(roundDancers, { moveDancers, m ->
-                m(moveDancers)
-            })
-        })
-
-private fun aOneTwoThree(initialDancers: String, moves: List<Move>, rounds: Int = 1) =
-        String(danceSequence(initialDancers.toCharArray(), moves)
-                .drop(rounds)
+        String(danceSequence("abcdefghijklmnop".toCharArray(), parse(input))
                 .first())
 
-private fun aOneTwoThreeScan(initialDancers: String, moves: List<Move>, rounds: Int = 1) =
-        danceSequence(initialDancers.toCharArray(), moves)
-                .take(rounds + 1) // need initial state too!
-                .map { String(it) }
+private fun danceSequence(initialDancers: CharArray, moves: List<Move>) =
+        generateSequence(initialDancers, { roundDancers ->
+            moves.fold(roundDancers, { moveDancers, move ->
+                move(moveDancers)
+            })
+        })
+                .drop(1) // seed
 
 private fun wholeDance(input: String): String {
-    val initialDancers = "abcdefghijklmnop"
-    val seed = initialDancers.toCharArray()
-    val moves = parse(input)
-    val seq = danceSequence(seed, moves)
-    val loopSize = 1 + seq.drop(1).takeWhile { !it.contentEquals(seed) }.count()
-    return aOneTwoThree(initialDancers, moves, 1_000_000_000 % loopSize)
+    val seed = "abcdefghijklmnop".toCharArray()
+    val loop = listOf(seed) + danceSequence(seed, parse(input))
+            .takeWhile { !it.contentEquals(seed) }
+            .toList()
+    return String(loop[1_000_000_000 % loop.size])
 }
