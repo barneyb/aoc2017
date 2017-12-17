@@ -78,11 +78,6 @@ private fun parseMove(move: String): Move {
     }
 }
 
-private fun swapChar(ds: String, a: Char, b: Char) =
-        ds.replace(a, '.')
-                .replace(b, a)
-                .replace('.', b)
-
 private fun parse(input: String): List<Move> =
         input.trim()
                 .split(',')
