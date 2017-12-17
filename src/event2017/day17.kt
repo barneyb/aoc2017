@@ -24,17 +24,15 @@ fun main(args: Array<String>) {
 }
 
 private fun partOne(input: Int): Int {
-    val buffer = mutableListOf<Int>()
-    buffer.add(0)
-    var pointer = 0
-    for (i in 1..2017) {
-        pointer = (pointer + input) % buffer.size + 1
-        if (pointer == buffer.size) {
-            buffer.add(i)
-        } else {
-            buffer.add(pointer % buffer.size, i)
-        }
-    }
+    val (buffer, pointer) = (1..2017)
+            .fold(Pair(mutableListOf(0), 0), { (b, p), i ->
+                val next = (p + input) % b.size + 1
+                if (next == b.size)
+                    b.add(i)
+                else
+                    b.add(next % b.size, i)
+                Pair(b, next)
+            })
     return buffer[pointer + 1]
 }
 
