@@ -164,27 +164,27 @@ private val expecteds = listOf(
 )
 
 private fun danceSequence(seed: CharArray, moves: List<Move>) =
-    generateSequence(seed, { roundDancers: CharArray ->
-        moves.fold(roundDancers, { moveDancers, m ->
-            m(moveDancers)
+        generateSequence(seed, { roundDancers: CharArray ->
+            moves.fold(roundDancers, { moveDancers, m ->
+                m(moveDancers)
+            })
         })
-    })
 
 private fun aOneTwoThree(initialDancers: String, moves: List<Move>, rounds: Int = 1) =
-    String(danceSequence(initialDancers.toCharArray(), moves)
-            .drop(rounds)
-            .first())
+        String(danceSequence(initialDancers.toCharArray(), moves)
+                .drop(rounds)
+                .first())
 
 private fun aOneTwoThreeScan(initialDancers: String, moves: List<Move>, rounds: Int = 1) =
-    danceSequence(initialDancers.toCharArray(), moves)
-            .take(rounds + 1) // need initial state too!
-            .map { String(it) }
+        danceSequence(initialDancers.toCharArray(), moves)
+                .take(rounds + 1) // need initial state too!
+                .map { String(it) }
 
 private fun wholeDance(input: String): String {
     val initialDancers = "abcdefghijklmnop"
     val seed = initialDancers.toCharArray()
     val moves = parse(input)
     val seq = danceSequence(seed, moves)
-    val loopSize = 1 + seq.drop(1).takeWhile { ! it.contentEquals(seed) }.count()
+    val loopSize = 1 + seq.drop(1).takeWhile { !it.contentEquals(seed) }.count()
     return aOneTwoThree(initialDancers, moves, 1_000_000_000 % loopSize)
 }
