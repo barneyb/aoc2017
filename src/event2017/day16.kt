@@ -33,12 +33,13 @@ fun main(args: Array<String>) {
         }
     }
 
-    val targetRounds = 1000000000
-    val rounds = 10000
+    val targetRounds = 1_000_000_000
+    val rounds = 100_00
     val start = System.currentTimeMillis()
     println("$rounds rounds: " + aOneTwoThree(dancers, input, rounds))
     val elapsed = System.currentTimeMillis() - start
     println((1.0 * elapsed / 1000).toString() + " sec for " + rounds + " rounds; expecting " + 1.0 * elapsed / rounds * targetRounds / 1000.0 / 60.0 / 60.0 + " hrs for all " + targetRounds)
+    // all with 100,000 rounds
     // 134 hours initially
     // 82 hours with all the spins collapsed
     // 1/4 hour with two moves
@@ -102,20 +103,24 @@ private fun parse(input: String): List<Move> {
     val (cmds, offset) = input.trim()
             .split(',')
             .fold(Pair(mutableListOf<String>(), 0), { (cmds, o), cmd ->
-                if (cmd[0] == 's') {
-                    val n = cmd.drop(1).toInt()
-                    Pair(cmds, (o + n) % 16)
-                } else if (cmd[0] == 'x') {
-                    val (i, j) = cmd.drop(1)
-                            .split('/')
-                            .map { it.toInt() }
-                            .map { it - o }
-                            .map { if (it < 0) it + 16 else it }
-                    cmds.add("x$i/$j")
-                    Pair(cmds, o)
-                } else {
-                    cmds.add(cmd)
-                    Pair(cmds, o)
+                when (cmd[0]) {
+                    's' -> {
+                        val n = cmd.drop(1).toInt()
+                        Pair(cmds, (o + n) % 16)
+                    }
+                    'x' -> {
+                        val (i, j) = cmd.drop(1)
+                                .split('/')
+                                .map { it.toInt() }
+                                .map { it - o }
+                                .map { if (it < 0) it + 16 else it }
+                        cmds.add("x$i/$j")
+                        Pair(cmds, o)
+                    }
+                    else -> {
+                        cmds.add(cmd)
+                        Pair(cmds, o)
+                    }
                 }
             })
     if (offset != 0) {
