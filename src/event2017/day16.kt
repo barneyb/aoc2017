@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
 
 typealias Move = (CharArray) -> CharArray
 
-private fun parseMove(cmd: String, offset: Int): Move {
+private fun parseMove(cmd: String): Move {
     when (cmd[0]) {
         's' -> {
             val n = cmd.drop(1).toInt()
@@ -53,10 +53,7 @@ private fun parseMove(cmd: String, offset: Int): Move {
         'x' -> {
             val (i, j) = cmd.drop(1)
                     .split('/')
-                    .map {
-                        val n = it.toInt() - offset
-                        if (n < 0) n + 16 else n
-                    }
+                    .map { it.toInt() }
             return { dancers ->
                 val c = dancers[i]
                 dancers[i] = dancers[j]
@@ -85,21 +82,29 @@ private fun parseMove(cmd: String, offset: Int): Move {
 }
 
 private fun parse(input: String): List<Move> {
-    val (moves, offset) = input.trim()
+    val (cmds, offset) = input.trim()
             .split(',')
-            .fold(Pair(mutableListOf<Move>(), 0), { (ms, o), cmd ->
+            .fold(Pair(mutableListOf<String>(), 0), { (cmds, o), cmd ->
                 if (cmd[0] == 's') {
                     val n = cmd.drop(1).toInt()
-                    Pair(ms, (o + n) % 16)
+                    Pair(cmds, (o + n) % 16)
+                } else if (cmd[0] == 'x') {
+                    val (i, j) = cmd.drop(1)
+                            .split('/')
+                            .map { it.toInt() }
+                            .map { it - o }
+                            .map { if (it < 0) it + 16 else it }
+                    cmds.add("x" + i + "/" + j)
+                    Pair(cmds, o)
                 } else {
-                    ms.add(parseMove(cmd, o))
-                    Pair(ms, o)
+                    cmds.add(cmd)
+                    Pair(cmds, o)
                 }
             })
     if (offset != 0) {
-        moves.add(parseMove("s" + offset, offset))
+        cmds.add("s" + offset)
     }
-    return moves
+    return cmds.map(::parseMove)
 }
 
 private fun dance(input: String) =
