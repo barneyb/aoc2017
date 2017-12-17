@@ -155,7 +155,7 @@ private fun aOneTwoThreeScan(initialDancers: String, input: String, rounds: Int 
                 .map { String(it) }
 
 private fun roundFactory(moves: List<Move>) =
-        { roundDancers: CharArray, i: Int ->
+        { roundDancers: CharArray, _: Int ->
             moves.fold(roundDancers, { moveDancers, m ->
                 m(moveDancers)
             })
