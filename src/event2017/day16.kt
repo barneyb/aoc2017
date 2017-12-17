@@ -10,7 +10,7 @@ import java.io.File
 
 fun main(args: Array<String>) {
     val input = File("input/2017/day16.txt").readText()
-    val dancers = "abcdefghijklmnop".toCharArray()
+    val dancers = "abcdefghijklmnop"
 
 //    banner("part 1")
 //    val assertOne = check(::dance)
@@ -94,7 +94,7 @@ private fun parse(input: String): List<Move> {
                             .map { it.toInt() }
                             .map { it - o }
                             .map { if (it < 0) it + 16 else it }
-                    cmds.add("x" + i + "/" + j)
+                    cmds.add("x$i/$j")
                     Pair(cmds, o)
                 } else {
                     cmds.add(cmd)
@@ -108,7 +108,7 @@ private fun parse(input: String): List<Move> {
 }
 
 private fun dance(input: String) =
-        aOneTwoThree("abcdefghijklmnop".toCharArray(), input)
+        aOneTwoThree("abcdefghijklmnop", input)
 
 private val expecteds = listOf(
         "ebjpfdgmihonackl",
@@ -131,23 +131,22 @@ private val expecteds = listOf(
         "adjifkgehonbclpm",
         "apljohgcifndkbme",
         "abdoefghijklmncp"
-).map { it.toCharArray() }
+)
 
-private fun aOneTwoThree(initialDancers: CharArray, input: String, rounds: Int = 1): String {
+private fun aOneTwoThree(initialDancers: String, input: String, rounds: Int = 1): String {
     val moves = parse(input)
-    return IntRange(1, rounds).fold(initialDancers, { roundDancers, i ->
+    return String(IntRange(1, rounds).fold(initialDancers.toCharArray(), { roundDancers, i ->
         val r =
                 moves.fold(roundDancers, { moveDancers, m ->
                     m(moveDancers)
                 })
-        if (r.contentEquals(expecteds[i - 1])) {
-            println("round ${i.toString().padStart(2, ' ')} passed: ${String(r)}")
+        val iString = i.toString().padStart(2, ' ')
+        val rString = String(r)
+        if (rString == expecteds[i - 1]) {
+            println("round $iString passed: $rString")
         } else {
-            println("round ${i.toString().padStart(2, ' ')} failed: ${String(r)} (expecting ${String(expecteds[i - 1])})")
+            println("round $iString failed: $rString (expecting ${expecteds[i - 1]})")
         }
         r
-    }).joinToString("")
+    }))
 }
-
-//private fun partTwo(input: String) =
-//        input.length
