@@ -12,11 +12,12 @@ fun main(args: Array<String>) {
     val input = File("input/2017/day16.txt").readText()
     val dancers = "abcdefghijklmnop"
 
-//    banner("part 1")
-//    val assertOne = check(::dance)
-//    assertOne(input, "ebjpfdgmihonackl")
-//    println("answer: " + dance(input))
+    banner("part 1")
+    val assertOne = check(::dance)
+    assertOne(input, "ebjpfdgmihonackl")
+    println("answer: " + dance(input))
 
+    banner("chaining")
     val ninteen = aOneTwoThree(dancers, input, 19)
     val twenty = aOneTwoThree(ninteen, input)
     val scan = aOneTwoThreeScan(dancers, input, 20)
@@ -33,6 +34,7 @@ fun main(args: Array<String>) {
         }
     }
 
+    banner("profiling")
     val targetRounds = 1_000_000_000
     val rounds = 100_00
     val start = System.currentTimeMillis()
