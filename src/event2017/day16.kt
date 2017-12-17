@@ -17,14 +17,25 @@ fun main(args: Array<String>) {
 //    assertOne(input, "ebjpfdgmihonackl")
 //    println("answer: " + dance(input))
 
-    aOneTwoThree(dancers, input, 20)
+    val twenty = aOneTwoThree(dancers, input, 20)
+    val scan = aOneTwoThreeScan(dancers, input, 20)
+    if (twenty != scan.last()) {
+        throw RuntimeException("scan didn't do it right")
+    }
 
-//    val targetRounds = 1000000000
-//    val rounds = 100000
-//    val start = System.currentTimeMillis()
-//    println("$rounds rounds: " + aOneTwoThree(dancers, input, rounds))
-//    val elapsed = System.currentTimeMillis() - start
-//    println((1.0 * elapsed / 1000).toString() + " sec for " + rounds + " rounds; expecting " + 1.0 * elapsed / rounds * targetRounds / 1000.0 / 60.0 / 60.0 + " hrs for all " + targetRounds)
+    for ((i, r) in scan.drop(1).withIndex()) {
+        val iString = i.toString().padStart(2, ' ')
+        if (r != expecteds[i]) {
+            println("round $iString failed: $r (expecting ${expecteds[i]})")
+        }
+    }
+
+    val targetRounds = 1000000000
+    val rounds = 10000
+    val start = System.currentTimeMillis()
+    println("$rounds rounds: " + aOneTwoThree(dancers, input, rounds))
+    val elapsed = System.currentTimeMillis() - start
+    println((1.0 * elapsed / 1000).toString() + " sec for " + rounds + " rounds; expecting " + 1.0 * elapsed / rounds * targetRounds / 1000.0 / 60.0 / 60.0 + " hrs for all " + targetRounds)
     // 134 hours initially
     // 82 hours with all the spins collapsed
     // 1/4 hour with two moves
@@ -139,18 +150,13 @@ private val expecteds = listOf(
 private fun aOneTwoThree(initialDancers: String, input: String, rounds: Int = 1) =
         String(IntRange(1, rounds).fold(initialDancers.toCharArray(), roundFactory(parse(input))))
 
+private fun aOneTwoThreeScan(initialDancers: String, input: String, rounds: Int = 1) =
+        IntRange(1, rounds).scan(initialDancers.toCharArray(), roundFactory(parse(input)))
+                .map { String(it) }
+
 private fun roundFactory(moves: List<Move>) =
         { roundDancers: CharArray, i: Int ->
-            val r =
-                    moves.fold(roundDancers, { moveDancers, m ->
-                        m(moveDancers)
-                    })
-            val iString = i.toString().padStart(2, ' ')
-            val rString = String(r)
-            if (rString == expecteds[i - 1]) {
-                println("round $iString passed: $rString")
-            } else {
-                println("round $iString failed: $rString (expecting ${expecteds[i - 1]})")
-            }
-            r
+            moves.fold(roundDancers, { moveDancers, m ->
+                m(moveDancers)
+            })
         }
