@@ -37,10 +37,9 @@ fun <I, R> check(functionUnderTest:(I) -> R): (I, R) -> Boolean {
     }
 }
 
-fun <T, R> Iterable<T>.scan(initial: R, operation: (acc: R, T) -> R): Iterable<R> {
-    return this.fold(Pair(initial, mutableListOf(initial)), { a, it ->
+fun <T, R> Iterable<T>.scan(initial: R, operation: (acc: R, T) -> R): List<R> =
+    this.fold(Pair(initial, mutableListOf(initial)), { a, it ->
         val next = operation(a.first, it)
-        a.second.plusAssign(next)
+        a.second.add(next)
         Pair(next, a.second)
     }).second
-}
