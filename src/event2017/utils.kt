@@ -7,16 +7,16 @@ package event2017
  */
 
 
-fun banner(label:String) {
+fun banner(label: String) {
     println("= $label ".padEnd(80, '='))
 }
 
 private var check_counter = 0
 
-fun <I, R> check(functionUnderTest:(I) -> R): (I, R) -> Boolean {
+fun <I, R> check(functionUnderTest: (I) -> R): (I, R) -> Boolean {
     val check = ++check_counter
     var run = 0
-    return { input:I, expected:R ->
+    return { input: I, expected: R ->
         run += 1
         print("${check.toString().padStart(2)}.${run.toString().padEnd(3)}: ")
         val startedAt = System.currentTimeMillis()
@@ -38,8 +38,9 @@ fun <I, R> check(functionUnderTest:(I) -> R): (I, R) -> Boolean {
 }
 
 fun <T, R> Iterable<T>.scan(initial: R, operation: (acc: R, T) -> R): List<R> =
-    this.fold(Pair(initial, mutableListOf(initial)), { a, it ->
-        val next = operation(a.first, it)
-        a.second.add(next)
-        Pair(next, a.second)
-    }).second
+        this.fold(Pair(initial, mutableListOf(initial)), { (acc, scan), it ->
+            val next = operation(acc, it)
+            scan.add(next)
+            Pair(next, scan)
+        })
+                .second
