@@ -17,16 +17,19 @@ fun main(args: Array<String>) {
 //    assertOne(input, "ebjpfdgmihonackl")
 //    println("answer: " + dance(input))
 
-    val twenty = aOneTwoThree(dancers, input, 20)
+    val ninteen = aOneTwoThree(dancers, input, 19)
+    val twenty = aOneTwoThree(ninteen, input)
     val scan = aOneTwoThreeScan(dancers, input, 20)
     if (twenty != scan.last()) {
-        throw RuntimeException("scan didn't do it right")
+        throw RuntimeException("final/scan don't agree")
     }
 
     for ((i, r) in scan.drop(1).withIndex()) {
-        val iString = i.toString().padStart(2, ' ')
-        if (r != expecteds[i]) {
-            println("round $iString failed: $r (expecting ${expecteds[i]})")
+        val iString = (i + 1).toString().padStart(2, ' ')
+        if (r == expecteds[i]) {
+            println("round $iString passed: $r")
+        } else {
+            println("round $iString FAILED: $r (expecting ${expecteds[i]})")
         }
     }
 
