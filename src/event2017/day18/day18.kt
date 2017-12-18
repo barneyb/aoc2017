@@ -54,10 +54,34 @@ private sealed class Value {
 private class Const(val n: Long) : Value()
 private class Var(val name: Char) : Value()
 
+private class Wire<T>() {
+
+    private val list = LinkedList<T>()
+    var itemCount = 0
+        private set
+    val size
+        get() =
+            list.size
+
+    fun add(value: T) {
+        itemCount += 1
+        list.add(value)
+    }
+
+    fun isEmpty() = list.isEmpty()
+    fun remove() = list.remove()
+    fun first() = list.first()
+    fun last() = list.last()
+
+    override fun toString() =
+            "Wire($list, $itemCount)"
+}
+
 private data class Computer(
         val id: Long = 0,
-        val cin: Queue<Long> = LinkedList(),
-        val cout: Queue<Long> = cin,
+        val cin: Wire<Long> = Wire(),
+        val waiting: Boolean = false,
+        val cout: Wire<Long> = cin,
         val pointer: Int = 0,
         val registers: Map<Char, Long> = mapOf('p' to id),
         val instructions: List<Instruction>
