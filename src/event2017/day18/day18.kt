@@ -62,6 +62,11 @@ private data class Computer(
         val registers: Map<Char, Long> = mapOf('p' to id),
         val instructions: List<Instruction>
 ) {
+
+    val terminated
+        get() =
+            pointer < 0 || pointer >= instructions.size
+
     fun get(v: Value) =
             when (v) {
                 is Const -> v.n
