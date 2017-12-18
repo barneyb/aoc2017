@@ -69,7 +69,7 @@ private class Wire<T> {
     }
 
     fun isEmpty() = list.isEmpty()
-    fun remove() = list.remove()
+    fun remove(): T = list.remove()
     fun first() = list.first()
     fun last() = list.last()
 
