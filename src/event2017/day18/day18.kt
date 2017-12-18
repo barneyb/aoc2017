@@ -35,15 +35,18 @@ fun main(args: Array<String>) {
 //    println("answer: " + partTwo(input))
 }
 
-private sealed class Value
+private sealed class Value {
+    companion object {
+        fun parse(s: String) =
+                if (s[0].isLetter())
+                    Var(s[0])
+                else
+                    Const(s.toLong())
+    }
+}
+
 private class Const(val n: Long) : Value()
 private class Var(val name: Char) : Value()
-
-private fun parseValue(s: String) =
-        if (s[0].isLetter())
-            Var(s[0])
-        else
-            Const(s.toLong())
 
 private data class Computer(
         val speaker: Long = 0,
@@ -149,13 +152,13 @@ private fun parse(input: String) =
                 .map { it.split(" ") }
                 .map { cmd ->
                     when (cmd[0]) {
-                        "snd" -> PlaySound(parseValue(cmd[1]))
-                        "set" -> Set(cmd[1][0], parseValue(cmd[2]))
-                        "add" -> Add(cmd[1][0], parseValue(cmd[2]))
-                        "mul" -> Multiply(cmd[1][0], parseValue(cmd[2]))
-                        "mod" -> Modulo(cmd[1][0], parseValue(cmd[2]))
-                        "rcv" -> RecoverSound(parseValue(cmd[1]))
-                        "jgz" -> JumpGTZero(parseValue(cmd[1]), parseValue(cmd[2]))
+                        "snd" -> PlaySound(Value.parse(cmd[1]))
+                        "set" -> Set(cmd[1][0], Value.parse(cmd[2]))
+                        "add" -> Add(cmd[1][0], Value.parse(cmd[2]))
+                        "mul" -> Multiply(cmd[1][0], Value.parse(cmd[2]))
+                        "mod" -> Modulo(cmd[1][0], Value.parse(cmd[2]))
+                        "rcv" -> RecoverSound(Value.parse(cmd[1]))
+                        "jgz" -> JumpGTZero(Value.parse(cmd[1]), Value.parse(cmd[2]))
                         else -> throw IllegalArgumentException("Unknown command: $cmd")
                     }
                 }
