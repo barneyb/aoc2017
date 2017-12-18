@@ -158,8 +158,6 @@ private class Receive(
             else
                 c
 
-    fun willReceive(c: Computer) =
-            c.get(register) != 0L
 }
 
 private interface Jump {
@@ -180,8 +178,11 @@ private class JumpGTZero(
 private fun partOne(input: String) =
         generateSequence(Computer(instructions = parse(input)), { c ->
             val ins = c.instructions[c.pointer]
-            if (ins is Receive && ins.willReceive(c))
-                null
+            if (ins is Receive)
+                if (c.get(ins.register) != 0L)
+                    null
+                else
+                    c.copy(pointer = c.pointer + 1)
             else
                 c.tick()
         })
