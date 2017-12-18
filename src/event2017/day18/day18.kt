@@ -54,7 +54,7 @@ private sealed class Value {
 private class Const(val n: Long) : Value()
 private class Var(val name: Char) : Value()
 
-private class Wire<T>() {
+private class Wire<T> {
 
     private val list = LinkedList<T>()
     var itemCount = 0
