@@ -2,6 +2,7 @@ package event2017.day18
 
 import event2017.banner
 import java.io.File
+import java.util.*
 
 /**
  *
@@ -11,7 +12,10 @@ import java.io.File
 
 fun main(args: Array<String>) {
     val input = File("input/2017/day18.txt").readText()
-    val exampleInput = "set a 1\n" +
+
+    banner("part 1")
+    val assertOne = event2017.check(::partOne)
+    assertOne("set a 1\n" +
             "add a 2\n" +
             "mul a a\n" +
             "mod a 5\n" +
@@ -20,17 +24,19 @@ fun main(args: Array<String>) {
             "rcv a\n" +
             "jgz a -1\n" +
             "set a 1\n" +
-            "jgz a -2\n"
-
-    banner("part 1")
-    val assertOne = event2017.check(::partOne)
-    assertOne(exampleInput, 4)
+            "jgz a -2\n", 4)
     assertOne(input, 3423)
     println("answer: " + partOne(input))
 
-//    banner("part 2")
-//    val assertTwo = check(::partTwo)
-//    assertTwo(exampleInput, 309)
+    banner("part 2")
+    val assertTwo = event2017.check(::partTwo)
+    assertTwo("snd 1\n" +
+            "snd 2\n" +
+            "snd p\n" +
+            "rcv a\n" +
+            "rcv b\n" +
+            "rcv c\n" +
+            "rcv d", 3)
 ////    assertTwo(input, 290)
 //    println("answer: " + partTwo(input))
 }
@@ -49,9 +55,11 @@ private class Const(val n: Long) : Value()
 private class Var(val name: Char) : Value()
 
 private data class Computer(
-        val speaker: Long = 0,
+        val id: Long = 0,
+        val cin: Queue<Long> = LinkedList(),
+        val cout: Queue<Long> = cin,
         val pointer: Int = 0,
-        val registers: Map<Char, Long> = mapOf(),
+        val registers: Map<Char, Long> = mapOf('p' to id),
         val instructions: List<Instruction>
 ) {
     fun get(v: Value) =
@@ -82,11 +90,13 @@ private sealed class Instruction {
     abstract fun execute(c: Computer): Computer
 }
 
-private class PlaySound(
+private class Send(
         val value: Value
 ) : Instruction() {
-    override fun execute(c: Computer) =
-            c.copy(speaker = c.get(value))
+    override fun execute(c: Computer): Computer {
+        c.cout.add(c.get(value))
+        return c
+    }
 }
 
 private class Set(
@@ -110,14 +120,17 @@ private class Add(r: Char, v: Value) : BinaryOp(Long::plus, r, v)
 private class Multiply(r: Char, v: Value) : BinaryOp(Long::times, r, v)
 private class Modulo(r: Char, v: Value) : BinaryOp(Long::rem, r, v)
 
-private class RecoverSound(
-        val value: Value
+private class Receive(
+        val register: Char
 ) : Instruction() {
     override fun execute(c: Computer) =
-            c
+            if (willRecover(c))
+                c.set(register, c.cin.remove())
+            else
+                c
 
-    fun willRecover(c: Computer) =
-            c.get(value) != 0L
+    fun willReceive(c: Computer) =
+            c.get(register) != 0L
 }
 
 private interface Jump {
@@ -138,13 +151,14 @@ private class JumpGTZero(
 private fun partOne(input: String) =
         generateSequence(Computer(instructions = parse(input)), { c ->
             val ins = c.instructions[c.pointer]
-            if (ins is RecoverSound && ins.willRecover(c))
+            if (ins is Receive && ins.willReceive(c))
                 null
             else
                 c.tick()
         })
                 .last()
-                .speaker
+                .cout
+                .last()
 
 private fun parse(input: String) =
         input.trim()
@@ -152,16 +166,16 @@ private fun parse(input: String) =
                 .map { it.split(" ") }
                 .map { cmd ->
                     when (cmd[0]) {
-                        "snd" -> PlaySound(Value.parse(cmd[1]))
+                        "snd" -> Send(Value.parse(cmd[1]))
                         "set" -> Set(cmd[1][0], Value.parse(cmd[2]))
                         "add" -> Add(cmd[1][0], Value.parse(cmd[2]))
                         "mul" -> Multiply(cmd[1][0], Value.parse(cmd[2]))
                         "mod" -> Modulo(cmd[1][0], Value.parse(cmd[2]))
-                        "rcv" -> RecoverSound(Value.parse(cmd[1]))
+                        "rcv" -> Receive(cmd[1][0])
                         "jgz" -> JumpGTZero(Value.parse(cmd[1]), Value.parse(cmd[2]))
                         else -> throw IllegalArgumentException("Unknown command: $cmd")
                     }
                 }
 
-//private fun partTwo(input: String) =
-//        input.length
+private fun partTwo(input: String) =
+        input.length
