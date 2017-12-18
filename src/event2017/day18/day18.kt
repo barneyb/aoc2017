@@ -37,8 +37,8 @@ fun main(args: Array<String>) {
             "rcv b\n" +
             "rcv c\n" +
             "rcv d", 3)
-////    assertTwo(input, 290)
-//    println("answer: " + partTwo(input))
+    assertTwo(input, 7493)
+    println("answer: " + partTwo(input))
 }
 
 private sealed class Value {
@@ -109,9 +109,14 @@ private data class Computer(
         val ins = instructions[pointer]
         return if (ins is Jump && ins.willJump(this))
             ins.execute(this)
-        else
-            ins.execute(this)
-                    .copy(pointer = pointer + 1)
+        else {
+            val next = ins.execute(this)
+            if (next.waiting) {
+                next
+            } else {
+                next.copy(pointer = pointer + 1)
+            }
+        }
     }
 }
 
@@ -153,10 +158,11 @@ private class Receive(
         val register: Char
 ) : Instruction() {
     override fun execute(c: Computer) =
-            if (willRecover(c))
-                c.set(register, c.cin.remove())
+            if (c.cin.isEmpty())
+                if (c.waiting) c else c.copy(waiting = true)
             else
-                c
+                (if (c.waiting) c.copy(waiting = false) else c)
+                        .set(register, c.cin.remove())
 
 }
 
@@ -207,5 +213,20 @@ private fun parse(input: String) =
                     }
                 }
 
-private fun partTwo(input: String) =
-        input.length
+private fun partTwo(input: String): Int {
+    val instructions = parse(input)
+    val one2zero = Wire<Long>()
+    val zero2one = Wire<Long>()
+    generateSequence(Triple(0,
+            Computer(id = 0, instructions = instructions, cin = one2zero, cout = zero2one),
+            Computer(id = 1, instructions = instructions, cin = zero2one, cout = one2zero)
+    ), { (t, z, o) ->
+        if ((z.waiting || z.terminated) && (o.waiting || o.terminated)) {
+            null // we're done
+        } else {
+            Triple(t + 1, z.tick(), o.tick())
+        }
+    })
+            .last() // to consume it
+    return one2zero.itemCount
+}
