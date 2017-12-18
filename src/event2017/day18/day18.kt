@@ -65,7 +65,7 @@ private data class Computer(
     fun set(register: Char, v: Long) =
             copy(registers = registers + Pair(register, v))
 
-    fun execute(): Computer {
+    fun tick(): Computer {
         val ins = instructions[pointer]
         return if (ins is Jump && ins.willJump(this))
             ins.execute(this)
@@ -138,7 +138,7 @@ private fun partOne(input: String) =
             if (ins is RecoverSound && ins.willRecover(c))
                 null
             else
-                c.execute()
+                c.tick()
         })
                 .last()
                 .speaker
