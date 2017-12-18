@@ -120,13 +120,13 @@ private data class Computer(
     }
 }
 
-private sealed class Instruction {
-    abstract fun execute(c: Computer): Computer
+private interface Instruction {
+    fun execute(c: Computer): Computer
 }
 
 private class Send(
         val value: Value
-) : Instruction() {
+) : Instruction {
     override fun execute(c: Computer): Computer {
         c.cout.add(c.get(value))
         return c
@@ -136,7 +136,7 @@ private class Send(
 private class Set(
         val register: Char,
         val value: Value
-) : Instruction() {
+) : Instruction {
     override fun execute(c: Computer) =
             c.set(register, value)
 }
@@ -145,7 +145,7 @@ private open class BinaryOp(
         val op: (Long, Long) -> Long,
         val register: Char,
         val value: Value
-) : Instruction() {
+) : Instruction {
     override fun execute(c: Computer) =
             c.set(register, op(c.get(register), c.get(value)))
 }
@@ -156,7 +156,7 @@ private class Modulo(r: Char, v: Value) : BinaryOp(Long::rem, r, v)
 
 private class Receive(
         val register: Char
-) : Instruction() {
+) : Instruction {
     override fun execute(c: Computer) =
             if (c.cin.isEmpty())
                 if (c.waiting) c else c.copy(waiting = true)
@@ -171,7 +171,7 @@ private interface Jump
 private class JumpGTZero(
         val check: Value,
         val offset: Value
-) : Instruction(), Jump {
+) : Instruction, Jump {
     override fun execute(c: Computer) =
             c.copy(pointer = c.pointer +
                     if (c.get(check) > 0)
