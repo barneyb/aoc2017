@@ -107,7 +107,7 @@ private data class Computer(
 
     fun tick(): Computer {
         val ins = instructions[pointer]
-        return if (ins is Jump && ins.willJump(this))
+        return if (ins is Jump)
             ins.execute(this)
         else {
             val next = ins.execute(this)
@@ -166,19 +166,20 @@ private class Receive(
 
 }
 
-private interface Jump {
-    fun willJump(c: Computer): Boolean
-}
+private interface Jump
 
 private class JumpGTZero(
         val check: Value,
         val offset: Value
 ) : Instruction(), Jump {
     override fun execute(c: Computer) =
-            c.copy(pointer = c.pointer + c.get(offset).toInt())
+            c.copy(pointer = c.pointer +
+                    if (c.get(check) > 0)
+                        c.get(offset).toInt()
+                    else
+                        1
+            )
 
-    override fun willJump(c: Computer) =
-            c.get(check) > 0
 }
 
 private fun partOne(input: String) =
