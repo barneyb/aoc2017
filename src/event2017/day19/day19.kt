@@ -4,6 +4,7 @@ import event2017.Direction
 import event2017.Direction.*
 import event2017.Point
 import event2017.banner
+import event2017.check
 import java.io.File
 
 /**
@@ -23,16 +24,16 @@ fun main(args: Array<String>) {
             "     +B-+  +--+ \n"
 
     banner("part 1")
-    val assertOne = event2017.check(::partOne)
+    val assertOne = check(::partOne)
     assertOne(exampleInput, "ABCDEF")
     assertOne(input, "VEBTPXCHLI")
     println("answer: " + partOne(input))
 
-//    banner("part 2")
-//    val assertTwo = check(::partTwo)
-//    assertTwo(exampleInput, 309)
-////    assertTwo(input, 123)
-//    println("answer: " + partTwo(input))
+    banner("part 2")
+    val assertTwo = check(::partTwo)
+    assertTwo(exampleInput, 38)
+    assertTwo(input, 18702)
+    println("answer: " + partTwo(input))
 }
 
 private data class Walker(
@@ -42,7 +43,7 @@ private data class Walker(
 )
 
 operator fun List<String>.contains(p: Point) =
-        p.y >= 0 && p.y < size && p.x >= 0 && p.x < this[p.y].length
+        p.y in 0..(size - 1) && p.x in 0..(this[p.y].length)
 
 operator fun List<String>.get(p: Point) =
         if (p in this) this[p.y][p.x] else ' '
@@ -50,7 +51,12 @@ operator fun List<String>.get(p: Point) =
 fun Char.isHorizontalPath() = this == '-' || this.isLetter()
 fun Char.isVerticalPath() = this == '|' || this.isLetter()
 
-private fun partOne(input: String): String {
+private fun partOne(input: String): String =
+        genPath(input)
+                .last()
+                .path
+
+private fun genPath(input: String): Sequence<Walker> {
     // because Point works in a normal Cartesian space, not the
     // origin-at-top-left version used for the diagram, the vertical axis
     // appears to work backwards. Point.up should be read as "move the point
@@ -78,9 +84,9 @@ private fun partOne(input: String): String {
             Walker(p.step(d), d, if (c.isLetter()) path + c else path)
         }
     })
-            .last()
-            .path
 }
 
-//private fun partTwo(input: String) =
-//        input.length
+private fun partTwo(input: String) =
+        // have to substract one because we take the step past the end
+        genPath(input)
+                .count() - 1
