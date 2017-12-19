@@ -49,7 +49,7 @@ private fun analytical(input:Int):Int {
     return base - 1 - halfSpan + (delta - halfSpan)
 }
 
-private enum class Direction {
+enum class Direction {
     UP, DOWN, LEFT, RIGHT
 }
 
@@ -61,6 +61,13 @@ data class Point(
     fun down()  = Point(x, y - 1)
     fun left()  = Point(x + 1, y)
     fun right() = Point(x - 1, y)
+    fun step(d: Direction) =
+            when (d) {
+                Direction.UP -> up()
+                Direction.DOWN -> down()
+                Direction.LEFT -> left()
+                Direction.RIGHT -> right()
+            }
 }
 
 private data class Cursor(
