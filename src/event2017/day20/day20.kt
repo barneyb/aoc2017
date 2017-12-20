@@ -12,20 +12,22 @@ import java.io.File
 
 fun main(args: Array<String>) {
     val input = File("input/2017/day20.txt").readText()
-    val exampleInput = "p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>\n" +
-            "p=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>"
 
     banner("part 1")
     val assertOne = check(::partOne)
-    assertOne(exampleInput, 0)
+    assertOne("p=< 3,0,0>, v=< 2,0,0>, a=<-1,0,0>\n" +
+            "p=< 4,0,0>, v=< 0,0,0>, a=<-2,0,0>", 0)
     assertOne(input, 344)
     println("answer: " + partOne(input))
 
-//    banner("part 2")
-//    val assertTwo = check(::partTwo)
-//    assertTwo(exampleInput, 309)
-////    assertTwo(input, 290)
-//    println("answer: " + partTwo(input))
+    banner("part 2")
+    val assertTwo = check(::partTwo)
+    assertTwo("p=<-6,0,0>, v=< 3,0,0>, a=< 0,0,0>\n" +
+            "p=<-4,0,0>, v=< 2,0,0>, a=< 0,0,0>\n" +
+            "p=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>\n" +
+            "p=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>\n", 1) // particle 3
+//    assertTwo(input, 290)
+    println("answer: " + partTwo(input))
 }
 
 private data class Vector(
@@ -42,15 +44,43 @@ private data class Particle(
         val pos: Vector,
         val vel: Vector,
         val acc: Vector
-)
+) {
+    fun tick(): Particle {
+        val v = Vector(
+                vel.x + acc.x,
+                vel.y + acc.y,
+                vel.z + acc.z
+        )
+        return Particle(
+                id,
+                Vector(
+                        pos.x + v.x,
+                        pos.y + v.y,
+                        pos.z + v.z
+                ),
+                v,
+                acc
+        )
+    }
+}
 
-private fun partOne(input: String): Int {
+private fun partOne(input: String): Int = parse(input)
+        .sortedWith(compareBy(
+                { it.acc.m },
+                { it.vel.m },
+                { it.pos.m }
+        )
+        )
+        .first()
+        .id
+
+private fun parse(input: String): List<Particle> {
     val lines = input.trim()
             .replace("<", "")
             .replace(">", "")
             .replace(Regex(" *[pva]="), "")
             .split("\n")
-    val particles = (0..lines.size)
+    return (0..lines.size)
             .zip(lines)
             .map { (id, line) ->
                 val p = line.split(",")
@@ -62,16 +92,7 @@ private fun partOne(input: String): Int {
                         Vector(p[6], p[7], p[8])
                 )
             }
-    return particles
-            .sortedWith(compareBy(
-                    { it.acc.m },
-                    { it.vel.m },
-                    { it.pos.m }
-            )
-            )
-            .first()
-            .id
 }
 
-//private fun partTwo(input: String) =
-//        input.length
+private fun partTwo(input: String) =
+        input.length
