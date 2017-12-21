@@ -107,14 +107,12 @@ fun main(args: Array<String>) {
             ))
 
     banner("part 1")
-    check(partOne(2))(exampleInput, 12)
-    check(partOne(5))(input, 142)
-    println("answer: " + partOne(5)(input))
+    check(partZero)(exampleInput, 12)
+    check(partOne)(input, 142)
+    println("answer: " + partOne(input))
 
-//    banner("part 2")
-//    val assertTwo = check(::partTwo)
-//    assertTwo(exampleInput, 309)
-////    assertTwo(input, 290)
+    banner("part 2")
+    check(partTwo)(input, 1879071)
 //    println("answer: " + partTwo(input))
 }
 
@@ -265,7 +263,7 @@ private val initial = Pattern(".#.\n" +
         "..#\n" +
         "###")
 
-private val partOne = { iterations: Int ->
+private val partAny = { iterations: Int ->
     { input: String ->
         val rulebook = input.trim().split("\n")
                 .map {
@@ -294,5 +292,6 @@ private val partOne = { iterations: Int ->
     }
 }
 
-//private fun partTwo(input: String) =
-//        input.length
+private val partZero = partAny(2)
+private val partOne = partAny(5)
+private val partTwo = partAny(18)
