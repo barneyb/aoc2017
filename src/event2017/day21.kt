@@ -48,25 +48,25 @@ fun main(args: Array<String>) {
                     "#.#/.#./#.#"
             )
     )
-    banner("Pattern.split")
-    val assertSplit = check({ it: String -> Pattern(it).split().map { it.toString() } })
+    banner("Image.split")
+    val assertSplit = check({ it: String -> Image(it).split().map { it.toString() } })
     splits.forEach { (i, o) ->
         assertSplit(i, o)
     }
 
-    banner("List<Pattern>.stitch")
-    val assertStitch = check({ it: List<String> -> it.map { Pattern(it) }.stitch().toString() })
+    banner("List<Image>.stitch")
+    val assertStitch = check({ it: List<String> -> it.map { Image(it) }.stitch().toString() })
     splits.forEach { (i, o) ->
         assertStitch(o, i)
     }
 
-    banner("Pattern.flip")
-    val assertFlip = check({ it: String -> Pattern(it).flip().toString() })
+    banner("Image.flip")
+    val assertFlip = check({ it: String -> Image(it).flip().toString() })
     assertFlip(".#./..#/###", "###/..#/.#.")
     assertFlip("#./..", "../#.")
 
-    banner("Pattern.rotations")
-    val assertRotations = check({ it: String -> Pattern(it).rotations().map { it.toString() } })
+    banner("Image.rotations")
+    val assertRotations = check({ it: String -> Image(it).rotations().map { it.toString() } })
     assertRotations(
             "#./" +
                     "..",
@@ -116,8 +116,8 @@ fun main(args: Array<String>) {
 //    println("answer: " + partTwo(input))
 }
 
-private data class Pattern(
-        val pixels: BooleanArray
+private data class Image(
+        private val pixels: BooleanArray
 ) {
 
     constructor(pixels: List<Boolean>) :
@@ -134,7 +134,7 @@ private data class Pattern(
 
     val dim = Math.sqrt(pixels.size.toDouble()).toInt()
 
-    fun countOn() = pixels.count { it }
+    fun litCount() = pixels.count { it }
 
     fun get(r: Int, c: Int) = pixels[r * dim + c]
 
@@ -147,7 +147,7 @@ private data class Pattern(
     private fun split2() =
             (0 until dim step 2).flatMap { r ->
                 (0 until dim step 2).map { c ->
-                    Pattern(
+                    Image(
                             get(r, c),
                             get(r, c + 1),
                             get(r + 1, c),
@@ -159,7 +159,7 @@ private data class Pattern(
     private fun split3() =
             (0 until dim step 3).flatMap { r ->
                 (0 until dim step 3).map { c ->
-                    Pattern(
+                    Image(
                             get(r, c),
                             get(r, c + 1),
                             get(r, c + 2),
@@ -173,11 +173,11 @@ private data class Pattern(
                 }
             }
 
-    fun variants() =
+    fun variations() =
             rotations() + flip().rotations()
 
     fun flip() =
-            Pattern(
+            Image(
                     ((dim - 1) downTo 0).flatMap { r ->
                         (0 until dim).map { c ->
                             get(r, c)
@@ -193,7 +193,7 @@ private data class Pattern(
 
     private fun rotations2() =
             generateSequence(this, { p ->
-                Pattern(
+                Image(
                         p.get(1, 0),
                         p.get(0, 0),
                         p.get(1, 1),
@@ -205,7 +205,7 @@ private data class Pattern(
 
     private fun rotations3() =
             generateSequence(this, { p ->
-                Pattern(
+                Image(
                         p.get(2, 0),
                         p.get(1, 0),
                         p.get(0, 0),
@@ -232,7 +232,7 @@ private data class Pattern(
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
-        if (other !is Pattern) return false
+        if (other !is Image) return false
 
         if (!Arrays.equals(pixels, other.pixels)) return false
 
@@ -245,10 +245,10 @@ private data class Pattern(
 
 }
 
-private fun List<Pattern>.stitch(): Pattern {
+private fun List<Image>.stitch(): Image {
     val gdim = Math.sqrt(size.toDouble()).toInt()
     val pdim = first().dim
-    return Pattern((0 until gdim).flatMap { gr ->
+    return Image((0 until gdim).flatMap { gr ->
         (0 until pdim).flatMap { pr ->
             (0 until gdim).flatMap { gc ->
                 (0 until pdim).map { pc ->
@@ -259,37 +259,33 @@ private fun List<Pattern>.stitch(): Pattern {
     })
 }
 
-private val initial = Pattern(".#.\n" +
-        "..#\n" +
-        "###")
+private val initial = Image(".#./..#/###")
 
-private val partAny = { iterations: Int ->
-    { input: String ->
-        val rulebook = input.trim().split("\n")
-                .map {
-                    val (src, dest) = it.split("=>")
-                            .map { Pattern(it) }
-                    Pair(src, dest)
-                }
-                .toMap()
-        val final = generateSequence(initial, {
-            it.split().map { p ->
-                p.variants().map {
-                    rulebook[it]
-                }
-                        .filter { it != null }
-                        .requireNoNulls()
-                        .distinct()
-                        .first()
+private fun partAny(iterations: Int) = { input: String ->
+    val rulebook = parse(input)
+    generateSequence(initial, {
+        it.split().map { p ->
+            p.variations().map {
+                rulebook[it]
             }
-                    .stitch()
-        })
-                .drop(iterations)
-                .first()
+                    .filter { it != null }
+                    .first()!!
+        }
+                .stitch()
+    })
+            .drop(iterations)
+            .first()
+            .litCount()
+}
 
-        final
-                .countOn()
-    }
+private fun parse(input: String): Map<Image, Image> {
+    return input.trim().split("\n")
+            .map {
+                val (src, dest) = it.split("=>")
+                        .map { Image(it) }
+                Pair(src, dest)
+            }
+            .toMap()
 }
 
 private val partZero = partAny(2)
