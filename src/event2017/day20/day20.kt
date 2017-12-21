@@ -26,8 +26,8 @@ fun main(args: Array<String>) {
             "p=<-4,0,0>, v=< 2,0,0>, a=< 0,0,0>\n" +
             "p=<-2,0,0>, v=< 1,0,0>, a=< 0,0,0>\n" +
             "p=< 3,0,0>, v=<-1,0,0>, a=< 0,0,0>\n", 1) // particle 3
-//    assertTwo(input, 290)
-    println("answer: " + partTwo(input))
+    assertTwo(input, 404)
+//    println("answer: " + partTwo(input))
 }
 
 private data class Vector(
@@ -94,4 +94,18 @@ private fun parse(input: String): List<Particle> {
 }
 
 private fun partTwo(input: String) =
-        input.length
+        generateSequence(parse(input), { ps ->
+            val collisions = ps.groupBy { it.pos }
+                    .filter { (_, ps) ->
+                        ps.size > 1
+                    }
+                    .keys
+            ps.filter {
+                it.pos !in collisions
+            }.map {
+                it.tick()
+            }
+        })
+                .drop(45)
+                .first()
+                .size
