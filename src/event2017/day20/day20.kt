@@ -37,6 +37,13 @@ private data class Vector(
 ) {
     val m
         get() = Math.abs(x) + Math.abs(y) + Math.abs(z)
+
+    operator fun plus(v: Vector) =
+            Vector(
+                    x + v.x,
+                    y + v.y,
+                    z + v.z
+            )
 }
 
 private data class Particle(
@@ -46,19 +53,11 @@ private data class Particle(
         val acc: Vector
 ) {
     fun tick(): Particle {
-        val v = Vector(
-                vel.x + acc.x,
-                vel.y + acc.y,
-                vel.z + acc.z
-        )
+        val newVel = vel + acc
         return Particle(
                 id,
-                Vector(
-                        pos.x + v.x,
-                        pos.y + v.y,
-                        pos.z + v.z
-                ),
-                v,
+                pos + newVel,
+                newVel,
                 acc
         )
     }
