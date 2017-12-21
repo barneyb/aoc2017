@@ -7,8 +7,13 @@ package event2017
  */
 
 
-fun banner(label: String) {
-    println("= $label ".padEnd(80, '='))
+fun banner(label: String = "") {
+    println((
+            if (label.trim().length == 0)
+                ""
+            else
+                "= $label "
+            ).padEnd(80, '='))
 }
 
 private var check_counter = 0
