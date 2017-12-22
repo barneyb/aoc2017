@@ -25,12 +25,12 @@ fun main(args: Array<String>) {
 
 }
 
-fun severity(input: String) =
+private fun severity(input: String) =
         parse(input)
                 .filter { it.caught() }
                 .sumBy { it.severity }
 
-data class Layer(
+private data class Layer(
         val depth: Int,
         val range: Int
 ) {
@@ -41,7 +41,7 @@ data class Layer(
         get() = depth * range
 }
 
-fun Layer.caught(delay: Int = 0) = (delay + depth) % period == 0
+private fun Layer.caught(delay: Int = 0) = (delay + depth) % period == 0
 
 private fun parse(input: String): List<Layer> {
     return input.split("\n")
@@ -54,7 +54,7 @@ private fun parse(input: String): List<Layer> {
             }
 }
 
-fun delay(input: String) =
+private fun delay(input: String) =
         generateSequence(Pair(0, parse(input)), { p ->
             Pair(p.first + 1, p.second)
         })

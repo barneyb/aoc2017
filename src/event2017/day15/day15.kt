@@ -28,8 +28,8 @@ fun main(args: Array<String>) {
 //    println("answer: " + filteredMatches(input))
 }
 
-typealias Generator = Sequence<Long>
-typealias GenPair = Pair<Generator, Generator>
+private typealias Generator = Sequence<Long>
+private typealias GenPair = Pair<Generator, Generator>
 
 private fun parse(input: String): GenPair {
     val seeds = input.trim().split("\n")
@@ -56,10 +56,10 @@ private fun judge(p: GenPair, rounds: Int) =
                     a == b
                 }
 
-fun matches(input: String) =
+private fun matches(input: String) =
         judge(parse(input), 40_000_000)
 
-fun filteredMatches(input: String): Int {
+private fun filteredMatches(input: String): Int {
     val p = parse(input)
     return judge(Pair(p.first.filter { it % 4 == 0L },
             p.second.filter { it % 8 == 0L }), 5_000_000)

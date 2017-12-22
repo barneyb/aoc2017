@@ -29,8 +29,8 @@ fun main(args: Array<String>) {
     println("answer: " + checksum2(input))
 }
 
-typealias Row = List<Int>
-typealias Sheet = List<Row>
+private typealias Row = List<Int>
+private typealias Sheet = List<Row>
 
 private fun parse(sheet: String):Sheet {
     return sheet

@@ -46,79 +46,80 @@ public class Day16 {
         throw new RuntimeException("unrecognized command: '" + cmd + "'");
     }
 
-}
-
-interface Move {
-    char[] move(char[] dancers);
-}
-
-class Spin implements Move {
-
-    private final int n;
-
-    Spin(String cmd) {
-        n = Integer.parseInt(cmd.substring(1));
+    private interface Move {
+        char[] move(char[] dancers);
     }
 
-    @Override
-    public char[] move(char[] dancers) {
-        char[] next = new char[16];
-        // copy tail -> head
-        System.arraycopy(dancers, 16 - n, next, 0, n);
-        // copy head -> tail
-        System.arraycopy(dancers, 0, next, n, 16 - n);
-        return next;
-    }
-}
+    private static class Spin implements Move {
 
-class Exchange implements Move {
+        private final int n;
 
-    private final int i;
-    private final int j;
-
-    Exchange(String cmd) {
-        String[] halves = cmd.substring(1).split("/");
-        i = Integer.parseInt(halves[0]);
-        j = Integer.parseInt(halves[1]);
-    }
-
-    @Override
-    public char[] move(char[] dancers) {
-        char c = dancers[i];
-        dancers[i] = dancers[j];
-        dancers[j] = c;
-        return dancers;
-    }
-
-}
-
-class Partner implements Move {
-
-    private final char a;
-    private final char b;
-
-    Partner(String cmd) {
-        a = cmd.charAt(1);
-        b = cmd.charAt(3);
-    }
-
-    @Override
-    public char[] move(char[] dancers) {
-        int i = indexOf(dancers, a);
-        int j = indexOf(dancers, b);
-        char c = dancers[i];
-        dancers[i] = dancers[j];
-        dancers[j] = c;
-        return dancers;
-    }
-
-    private int indexOf(char[] haystack, char needle) {
-        for (int i = haystack.length - 1; i >= 0; i--) {
-            if (haystack[i] == needle) {
-                return i;
-            }
+        Spin(String cmd) {
+            n = Integer.parseInt(cmd.substring(1));
         }
-        return -1;
+
+        @Override
+        public char[] move(char[] dancers) {
+            char[] next = new char[16];
+            // copy tail -> head
+            System.arraycopy(dancers, 16 - n, next, 0, n);
+            // copy head -> tail
+            System.arraycopy(dancers, 0, next, n, 16 - n);
+            return next;
+        }
     }
+
+    private static class Exchange implements Move {
+
+        private final int i;
+        private final int j;
+
+        Exchange(String cmd) {
+            String[] halves = cmd.substring(1).split("/");
+            i = Integer.parseInt(halves[0]);
+            j = Integer.parseInt(halves[1]);
+        }
+
+        @Override
+        public char[] move(char[] dancers) {
+            char c = dancers[i];
+            dancers[i] = dancers[j];
+            dancers[j] = c;
+            return dancers;
+        }
+
+    }
+
+    private static class Partner implements Move {
+
+        private final char a;
+        private final char b;
+
+        Partner(String cmd) {
+            a = cmd.charAt(1);
+            b = cmd.charAt(3);
+        }
+
+        @Override
+        public char[] move(char[] dancers) {
+            int i = indexOf(dancers, a);
+            int j = indexOf(dancers, b);
+            char c = dancers[i];
+            dancers[i] = dancers[j];
+            dancers[j] = c;
+            return dancers;
+        }
+
+        private int indexOf(char[] haystack, char needle) {
+            for (int i = haystack.length - 1; i >= 0; i--) {
+                if (haystack[i] == needle) {
+                    return i;
+                }
+            }
+            return -1;
+        }
+    }
+
 }
+
 

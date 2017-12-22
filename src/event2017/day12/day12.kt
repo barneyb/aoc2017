@@ -30,24 +30,24 @@ fun main(args: Array<String>) {
     println("answer: " + groupCount(input))
 }
 
-val groupSize = { id: Int ->
+private val groupSize = { id: Int ->
     { input: String ->
         parse(input).groupFrom(id).size
     }
 }
 
-val zerosGroupSize = groupSize(0)
+private val zerosGroupSize = groupSize(0)
 
-fun groupCount(input: String) =
+private fun groupCount(input: String) =
         generateSequence(parse(input), { map ->
             map - map.groupFrom(map.keys.first())
         }).takeWhile {
             it.isNotEmpty()
         }.count()
 
-typealias NodeMap = Map<Int, List<Int>>
+private typealias NodeMap = Map<Int, List<Int>>
 
-data class Generation(
+private data class Generation(
         val seed: Collection<Int>,
         val visited: Set<Int> = setOf<Int>()
 ) {

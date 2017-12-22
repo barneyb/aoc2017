@@ -48,8 +48,8 @@ private operator fun List<String>.contains(p: Point) =
 private operator fun List<String>.get(p: Point) =
         if (p in this) this[p.y][p.x] else ' '
 
-fun Char.isHorizontalPath() = this == '-' || this.isLetter()
-fun Char.isVerticalPath() = this == '|' || this.isLetter()
+private fun Char.isHorizontalPath() = this == '-' || this.isLetter()
+private fun Char.isVerticalPath() = this == '|' || this.isLetter()
 
 private fun partOne(input: String): String =
         genPath(input)

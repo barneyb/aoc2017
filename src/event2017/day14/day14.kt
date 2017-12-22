@@ -26,9 +26,9 @@ fun main(args: Array<String>) {
     partTwoPure(input, 1182)
 }
 
-const val GRID_DIM = 128
+private const val GRID_DIM = 128
 
-fun binaryGrid(input: String) =
+private fun binaryGrid(input: String) =
         (0 until GRID_DIM)
                 .map {
                     knotHash(input + "-" + it)
@@ -41,19 +41,19 @@ fun binaryGrid(input: String) =
                             .joinToString("")
                 }
 
-fun blocksUsed(input: String) =
+private fun blocksUsed(input: String) =
         binaryGrid(input).map {
             it.count { it == '1' }
         }.sum()
 
-fun Point.adjacent() = listOf(
+private fun Point.adjacent() = listOf(
         up(),
         down(),
         left(),
         right()
 )
 
-fun regionCount(input: String): Int {
+private fun regionCount(input: String): Int {
     val grid = mutableSetOf<Point>()
     binaryGrid(input)
             .forEachIndexed({ y, hash ->
@@ -78,8 +78,7 @@ fun regionCount(input: String): Int {
     return regionCount
 }
 
-
-fun regionCountPure(input: String): Int {
+private fun regionCountPure(input: String): Int {
     val rawGrid = binaryGrid(input)
             .mapIndexed { y, hash ->
                 hash.toList()

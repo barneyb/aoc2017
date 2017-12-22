@@ -26,7 +26,7 @@ fun main(args: Array<String>) {
     println("answer: " + maxStepsAway(input))
 }
 
-val combines = listOf(
+private val combines = listOf(
         Pair(Pair("n", "se"), "ne"),
         Pair(Pair("ne", "s"), "se"),
         Pair(Pair("se", "sw"), "s"),
@@ -35,7 +35,7 @@ val combines = listOf(
         Pair(Pair("nw", "ne"), "n")
 )
 
-val cancels = listOf(
+private val cancels = listOf(
         Pair("n", "s"),
         Pair("ne", "sw"),
         Pair("se", "nw"),
@@ -44,7 +44,7 @@ val cancels = listOf(
         Pair("nw", "se")
 )
 
-fun stepsAway(input: String) =
+private fun stepsAway(input: String) =
         stepsAwayInternal(input
                 .split(","))
 
@@ -82,7 +82,7 @@ private fun stepsAwayInternal(steps:List<String>): Int {
     return canceled.map { (_, count) -> count }.sum()
 }
 
-fun maxStepsAway(input: String): Int {
+private fun maxStepsAway(input: String): Int {
     val agg = input.split(",")
             .fold(Pair(listOf<String>(), 0), { (path, max), step ->
                 val afterStep = path + step

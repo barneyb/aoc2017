@@ -37,7 +37,7 @@ fun main(args: Array<String>) {
     println("answer: " + wholeDance(input))
 }
 
-typealias Move = (CharArray) -> CharArray
+private typealias Move = (CharArray) -> CharArray
 
 private fun parseMove(cmd: String): Move {
     when (cmd[0]) {

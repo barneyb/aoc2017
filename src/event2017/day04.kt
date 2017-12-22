@@ -45,7 +45,7 @@ private fun process(input: String, munge:(List<String>) -> List<String>):Int {
             .size
 }
 
-fun countValid2(input:String):Int {
+private fun countValid2(input:String):Int {
     return process(input) {
                 it.map {
                     it.toCharArray().sorted().joinToString("")
