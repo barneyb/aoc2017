@@ -49,10 +49,14 @@ private open class Carrier(
                     turnRight().step(),
                     s.infectCount
             ) else GameState(
-                    s.cluster + p,
+                    s.cluster + (p to NodeState.INFECTED),
                     turnLeft().step(),
                     s.infectCount + 1
             )
+}
+
+private enum class NodeState {
+    CLEAN, WEAK, INFECTED, FLAGGED
 }
 
 private data class GameState(
@@ -61,7 +65,7 @@ private data class GameState(
         val infectCount: Int = 0
 ) {
     override fun toString(): String {
-        val (min, max) = cluster.fold(Pair(carrier.p, carrier.p), { (min, max), p ->
+        val (min, max) = cluster.keys.fold(Pair(carrier.p, carrier.p), { (min, max), p ->
             Pair(Point(Math.min(min.x, p.x), Math.min(min.y, p.y)), Point(Math.max(max.x, p.x), Math.max(max.y, p.y)))
         })
         val sb = StringBuilder()
@@ -91,20 +95,20 @@ private fun partAnyFac(iterations: Int, carrierFactory: (Point) -> Carrier) = { 
             .infectCount
 }
 
-private typealias Cluster = Set<Point>
+private typealias Cluster = Map<Point, NodeState>
 
 private fun parse(input: String): Pair<Cluster, Point> {
     val lines = input.trim().split("\n")
     val o = (lines.size - 1) / 2
     @Suppress("NAME_SHADOWING")
-    val infected = lines.foldIndexed(setOf<Point>(), { row, ps, line ->
+    val infected = lines.foldIndexed(mapOf<Point, NodeState>(), { row, ps, line ->
         // since "up" means "decrease y" in drawn-on-paper-land, but
         // point uses cartesian ruls (up means increase y), just
         // flip the drawing and run with it.
         val flippedRow = lines.size - row - 1
         line.foldIndexed(ps, { col, ps, c ->
             if (c == '#')
-                ps + Point(col, flippedRow)
+                ps + (Point(col, flippedRow) to NodeState.INFECTED)
             else
                 ps
         })
