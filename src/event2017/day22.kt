@@ -113,11 +113,16 @@ private data class GameState(
                 }
         )
         val sb = StringBuilder()
-        for (row in min.y downTo max.y) { // flip it back over for display
+        for (row in max.y downTo min.y) { // flip it back over for display
             for (col in min.x..max.x) {
                 val p = Point(col, row)
                 sb.append(if (p == carrier.p) '[' else ' ')
-                sb.append(if (p in cluster) '#' else '.')
+                sb.append(when (cluster.getOrDefault(p, CLEAN)) {
+                    CLEAN -> '.'
+                    WEAK -> 'W'
+                    INFECTED -> '#'
+                    FLAGGED -> 'F'
+                })
                 sb.append(if (p == carrier.p) ']' else ' ')
             }
             sb.append('\n')
