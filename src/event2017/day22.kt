@@ -75,9 +75,12 @@ private data class GameState(
     }
 }
 
-private fun partOneFac(iterations: Int) = { input: String ->
+private fun partOneFac(iterations: Int) =
+        partAnyFac(iterations, { o -> Carrier(o)})
+
+private fun partAnyFac(iterations: Int, carrierFactory: (Point) -> Carrier) = { input: String ->
     val (cluster, origin) = parse(input)
-    generateSequence(GameState(cluster, Carrier(origin)), { s ->
+    generateSequence(GameState(cluster, carrierFactory(origin)), { s ->
         s.carrier.burst(s)
     })
             .drop(iterations)
