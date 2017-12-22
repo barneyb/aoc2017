@@ -140,38 +140,32 @@ private data class Image(
 
     fun split() =
             if (dim % 2 == 0)
-                split2()
+                (0 until dim step 2).flatMap { r ->
+                    (0 until dim step 2).map { c ->
+                        Image(
+                                get(r, c),
+                                get(r, c + 1),
+                                get(r + 1, c),
+                                get(r + 1, c + 1)
+                        )
+                    }
+                }
             else
-                split3()
-
-    private fun split2() =
-            (0 until dim step 2).flatMap { r ->
-                (0 until dim step 2).map { c ->
-                    Image(
-                            get(r, c),
-                            get(r, c + 1),
-                            get(r + 1, c),
-                            get(r + 1, c + 1)
-                    )
+                (0 until dim step 3).flatMap { r ->
+                    (0 until dim step 3).map { c ->
+                        Image(
+                                get(r, c),
+                                get(r, c + 1),
+                                get(r, c + 2),
+                                get(r + 1, c),
+                                get(r + 1, c + 1),
+                                get(r + 1, c + 2),
+                                get(r + 2, c),
+                                get(r + 2, c + 1),
+                                get(r + 2, c + 2)
+                        )
+                    }
                 }
-            }
-
-    private fun split3() =
-            (0 until dim step 3).flatMap { r ->
-                (0 until dim step 3).map { c ->
-                    Image(
-                            get(r, c),
-                            get(r, c + 1),
-                            get(r, c + 2),
-                            get(r + 1, c),
-                            get(r + 1, c + 1),
-                            get(r + 1, c + 2),
-                            get(r + 2, c),
-                            get(r + 2, c + 1),
-                            get(r + 2, c + 2)
-                    )
-                }
-            }
 
     fun variations() =
             rotations() + flip().rotations()
@@ -187,38 +181,32 @@ private data class Image(
 
     fun rotations() =
             if (dim % 2 == 0)
-                rotations2()
+                generateSequence(this, { p ->
+                    Image(
+                            p.get(1, 0),
+                            p.get(0, 0),
+                            p.get(1, 1),
+                            p.get(0, 1)
+                    )
+                })
+                        .take(4)
+                        .toList()
             else
-                rotations3()
-
-    private fun rotations2() =
-            generateSequence(this, { p ->
-                Image(
-                        p.get(1, 0),
-                        p.get(0, 0),
-                        p.get(1, 1),
-                        p.get(0, 1)
-                )
-            })
-                    .take(4)
-                    .toList()
-
-    private fun rotations3() =
-            generateSequence(this, { p ->
-                Image(
-                        p.get(2, 0),
-                        p.get(1, 0),
-                        p.get(0, 0),
-                        p.get(2, 1),
-                        p.get(1, 1),
-                        p.get(0, 1),
-                        p.get(2, 2),
-                        p.get(1, 2),
-                        p.get(0, 2)
-                )
-            })
-                    .take(4)
-                    .toList()
+                generateSequence(this, { p ->
+                    Image(
+                            p.get(2, 0),
+                            p.get(1, 0),
+                            p.get(0, 0),
+                            p.get(2, 1),
+                            p.get(1, 1),
+                            p.get(0, 1),
+                            p.get(2, 2),
+                            p.get(1, 2),
+                            p.get(0, 2)
+                    )
+                })
+                        .take(4)
+                        .toList()
 
     override fun toString() =
             (0 until dim).map { r ->
