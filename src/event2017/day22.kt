@@ -40,9 +40,19 @@ private data class Carrier(
 
     fun step() = Carrier(p.step(d), d)
 
+    fun burst(s: GameState) =
+            if (p in s.cluster) GameState(
+                    s.cluster - p,
+                    turnRight().step(),
+                    s.infectCount
+            ) else GameState(
+                    s.cluster + p,
+                    turnLeft().step(),
+                    s.infectCount + 1
+            )
 }
 
-private data class State(
+private data class GameState(
         val cluster: Cluster,
         val carrier: Carrier,
         val infectCount: Int = 0
@@ -67,20 +77,8 @@ private data class State(
 
 private fun partOneFac(iterations: Int) = { input: String ->
     val (cluster, origin) = parse(input)
-    generateSequence(State(cluster, Carrier(origin)), { s ->
-        if (s.carrier.p in s.cluster) {
-            State(
-                    s.cluster - s.carrier.p,
-                    s.carrier.turnRight().step(),
-                    s.infectCount
-            )
-        } else {
-            State(
-                    s.cluster + s.carrier.p,
-                    s.carrier.turnLeft().step(),
-                    s.infectCount + 1
-            )
-        }
+    generateSequence(GameState(cluster, Carrier(origin)), { s ->
+        s.carrier.burst(s)
     })
             .drop(iterations)
             .first()
