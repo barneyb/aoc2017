@@ -49,51 +49,6 @@ private fun analytical(input:Int):Int {
     return base - 1 - halfSpan + (delta - halfSpan)
 }
 
-enum class Direction {
-    UP, DOWN, LEFT, RIGHT;
-
-    fun turnRight() =
-            when (this) {
-                UP -> RIGHT
-                RIGHT -> DOWN
-                DOWN -> LEFT
-                LEFT -> UP
-            }
-
-    fun turnLeft() =
-            when (this) {
-                UP -> LEFT
-                LEFT -> DOWN
-                DOWN -> RIGHT
-                RIGHT -> UP
-            }
-
-    fun reverse() =
-            when (this) {
-                UP -> DOWN
-                LEFT -> RIGHT
-                DOWN -> UP
-                RIGHT -> LEFT
-            }
-}
-
-data class Point(
-    val x: Int,
-    val y: Int
-) {
-    fun up()    = Point(x, y + 1)
-    fun down()  = Point(x, y - 1)
-    fun left()  = Point(x - 1, y)
-    fun right() = Point(x + 1, y)
-    operator fun plus(d: Direction) =
-            when (d) {
-                Direction.UP -> up()
-                Direction.DOWN -> down()
-                Direction.LEFT -> left()
-                Direction.RIGHT -> right()
-            }
-}
-
 private data class Cursor(
     val x: Int,
     val y: Int,
