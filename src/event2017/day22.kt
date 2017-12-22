@@ -31,7 +31,7 @@ fun main(args: Array<String>) {
 //    println("answer: " + partTwo(input))
 }
 
-private open class Carrier(
+private data class Carrier(
         var p: Point,
         var d: Direction = Direction.UP,
         var infectCount: Int = 0
@@ -55,46 +55,6 @@ private open class Carrier(
     fun infect() {
         infectCount += 1
     }
-
-    open fun burst(cluster: Cluster) {
-        if (p in cluster) {
-            cluster.remove(p)
-            turnRight()
-        } else {
-            cluster.put(p, INFECTED)
-            infect()
-            turnLeft()
-        }
-        step()
-    }
-}
-
-private class EvolvedCarrier(
-        p: Point
-) : Carrier(p) {
-
-    override fun burst(cluster: Cluster) {
-        when (cluster.getOrDefault(p, CLEAN)) {
-            CLEAN -> {
-                cluster.put(p, WEAK)
-                turnLeft()
-            }
-            WEAK -> {
-                cluster.put(p, INFECTED)
-                infect()
-            }
-            INFECTED -> {
-                cluster.put(p, FLAGGED)
-                turnRight()
-            }
-            FLAGGED -> {
-                cluster.remove(p)
-                reverse()
-            }
-        }
-        step()
-    }
-
 }
 
 private enum class NodeState {
@@ -138,13 +98,23 @@ private data class GameState(
 }
 
 private fun partOneFac(iterations: Int) =
-        partAnyFac(iterations, { o -> Carrier(o) })
+        partAnyFac(iterations, { cluster: Cluster, carrier: Carrier ->
+            if (carrier.p in cluster) {
+                cluster.remove(carrier.p)
+                carrier.turnRight()
+            } else {
+                cluster.put(carrier.p, INFECTED)
+                carrier.infect()
+                carrier.turnLeft()
+            }
+            carrier.step()
+        })
 
-private fun partAnyFac(iterations: Int, carrierFactory: (Point) -> Carrier) = { input: String ->
+private fun partAnyFac(iterations: Int, burst: (Cluster, Carrier) -> Unit) = { input: String ->
     val (cluster, origin) = parse(input)
-    val carrier = carrierFactory(origin)
+    val carrier = Carrier(origin)
     for (n in 1..iterations) {
-        carrier.burst(cluster)
+        burst(cluster, carrier)
     }
     carrier.infectCount
 }
@@ -171,6 +141,26 @@ private fun parse(input: String): Pair<Cluster, Point> {
 private val partOne = partOneFac(10000)
 
 private fun partTwoFac(iterations: Int) =
-        partAnyFac(iterations, { o -> EvolvedCarrier(o) })
+        partAnyFac(iterations, { cluster: Cluster, carrier: Carrier ->
+            when (cluster.getOrDefault(carrier.p, CLEAN)) {
+                CLEAN -> {
+                    cluster.put(carrier.p, WEAK)
+                    carrier.turnLeft()
+                }
+                WEAK -> {
+                    cluster.put(carrier.p, INFECTED)
+                    carrier.infect()
+                }
+                INFECTED -> {
+                    cluster.put(carrier.p, FLAGGED)
+                    carrier.turnRight()
+                }
+                FLAGGED -> {
+                    cluster.remove(carrier.p)
+                    carrier.reverse()
+                }
+            }
+            carrier.step()
+        })
 
 private val partTwo = partTwoFac(10_000_000)
