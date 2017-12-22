@@ -67,6 +67,14 @@ enum class Direction {
                 DOWN -> RIGHT
                 RIGHT -> UP
             }
+
+    fun reverse() =
+            when (this) {
+                UP -> DOWN
+                LEFT -> RIGHT
+                DOWN -> UP
+                RIGHT -> LEFT
+            }
 }
 
 data class Point(
