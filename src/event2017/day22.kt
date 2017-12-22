@@ -29,18 +29,21 @@ fun main(args: Array<String>) {
 //    println("answer: " + partTwo(input))
 }
 
-private data class Carrier(
+private open class Carrier(
         val p: Point,
         val d: Direction = Direction.UP
 ) {
+    // emulate a data class's copy method
+    protected open fun copy(p: Point = this.p, d: Direction = this.d) =
+        Carrier(p = p, d = d)
 
-    fun turnRight() = Carrier(p, d.turnRight())
+    fun turnRight() = copy(d = d.turnRight())
 
-    fun turnLeft() = Carrier(p, d.turnLeft())
+    fun turnLeft() = copy(d = d.turnLeft())
 
-    fun step() = Carrier(p.step(d), d)
+    fun step() = copy(p = p.step(d))
 
-    fun burst(s: GameState) =
+    open fun burst(s: GameState) =
             if (p in s.cluster) GameState(
                     s.cluster - p,
                     turnRight().step(),
