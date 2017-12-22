@@ -50,7 +50,23 @@ private fun analytical(input:Int):Int {
 }
 
 enum class Direction {
-    UP, DOWN, LEFT, RIGHT
+    UP, DOWN, LEFT, RIGHT;
+
+    fun turnRight() =
+            when (this) {
+                UP -> RIGHT
+                RIGHT -> DOWN
+                DOWN -> LEFT
+                LEFT -> UP
+            }
+
+    fun turnLeft() =
+            when (this) {
+                UP -> LEFT
+                LEFT -> DOWN
+                DOWN -> RIGHT
+                RIGHT -> UP
+            }
 }
 
 data class Point(
