@@ -42,10 +42,10 @@ private data class Walker(
         val path: String = ""
 )
 
-operator fun List<String>.contains(p: Point) =
+private operator fun List<String>.contains(p: Point) =
         p.y in 0..(size - 1) && p.x in 0..(this[p.y].length)
 
-operator fun List<String>.get(p: Point) =
+private operator fun List<String>.get(p: Point) =
         if (p in this) this[p.y][p.x] else ' '
 
 fun Char.isHorizontalPath() = this == '-' || this.isLetter()
