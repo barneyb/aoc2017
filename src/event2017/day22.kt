@@ -110,7 +110,10 @@ private fun partOneFac(iterations: Int) =
             carrier.step()
         })
 
-private fun partAnyFac(iterations: Int, burst: (Cluster, Carrier) -> Unit) = { input: String ->
+private fun partAnyFac(
+        iterations: Int,
+        burst: (Cluster, Carrier) -> Unit
+) = { input: String ->
     val (cluster, origin) = parse(input)
     val carrier = Carrier(origin)
     for (n in 1..iterations) {
