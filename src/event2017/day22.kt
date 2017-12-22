@@ -49,7 +49,7 @@ private data class Carrier(
     }
 
     fun step() {
-        p = p.step(d)
+        p += d
     }
 
     fun infect() {

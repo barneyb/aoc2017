@@ -81,7 +81,7 @@ private fun genPath(input: String): Sequence<Walker> {
                 else
                     Walker(p.down(), DOWN, path)
         } else { // take another step?
-            Walker(p.step(d), d, if (c.isLetter()) path + c else path)
+            Walker(p + d, d, if (c.isLetter()) path + c else path)
         }
     })
 }

@@ -85,7 +85,7 @@ data class Point(
     fun down()  = Point(x, y - 1)
     fun left()  = Point(x - 1, y)
     fun right() = Point(x + 1, y)
-    fun step(d: Direction) =
+    operator fun plus(d: Direction) =
             when (d) {
                 Direction.UP -> up()
                 Direction.DOWN -> down()
