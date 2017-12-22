@@ -112,6 +112,8 @@ private data class GameState(
                     )
                 }
         )
+//        val min = Point(-3, -3)
+//        val max = Point(5, 4)
         val sb = StringBuilder()
         for (row in max.y downTo min.y) { // flip it back over for display
             for (col in min.x..max.x) {
@@ -136,7 +138,11 @@ private fun partOneFac(iterations: Int) =
 
 private fun partAnyFac(iterations: Int, carrierFactory: (Point) -> Carrier) = { input: String ->
     val (cluster, origin) = parse(input)
+    val counter = generateSequence(1, { it + 1 }).iterator()
     generateSequence(GameState(cluster, carrierFactory(origin)), { s ->
+        val c = counter.next()
+        if (c % 15_000 == 0)
+            println("${c} bursts (${Math.round(100.0 * c / iterations)}%) w/ ${s.infectCount} infections")
         s.carrier.burst(s)
     })
             .drop(iterations)
