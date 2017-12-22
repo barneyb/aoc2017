@@ -21,13 +21,13 @@ fun main(args: Array<String>) {
     val assertOne = check(partOne)
     assertOne(exampleInput, 5587)
     assertOne(input, 5399)
-//    println("answer: " + partOne(input))
+    println("answer: " + partOne(input))
 
     banner("part 2")
     check(partTwoFac(100))(exampleInput, 26)
-//    val assertTwo = check(partTwo)
+    val assertTwo = check(partTwo)
 //    assertTwo(exampleInput, 2511944)
-////    assertTwo(input, 290)
+    assertTwo(input, 2511776)
 //    println("answer: " + partTwo(input))
 }
 
@@ -48,15 +48,21 @@ private open class Carrier(
     fun step() = dupe(p.step(d), d)
 
     open fun burst(s: GameState) =
-            if (p in s.cluster) GameState(
-                    s.cluster - p,
-                    turnRight().step(),
-                    s.infectCount
-            ) else GameState(
-                    s.cluster + (p to INFECTED),
-                    turnLeft().step(),
-                    s.infectCount + 1
-            )
+            if (p in s.cluster) {
+                s.cluster.remove(p)
+                GameState(
+                        s.cluster,
+                        turnRight().step(),
+                        s.infectCount
+                )
+            } else {
+                s.cluster.put(p, INFECTED)
+                GameState(
+                        s.cluster,
+                        turnLeft().step(),
+                        s.infectCount + 1
+                )
+            }
 }
 
 private class EvolvedCarrier(
@@ -69,26 +75,38 @@ private class EvolvedCarrier(
 
     override fun burst(s: GameState) =
             when (s.cluster.getOrDefault(p, CLEAN)) {
-                CLEAN -> GameState(
-                        s.cluster + (p to WEAK),
-                        turnLeft().step(),
-                        s.infectCount
-                )
-                WEAK -> GameState(
-                        s.cluster + (p to INFECTED),
-                        step(),
-                        s.infectCount + 1
-                )
-                INFECTED -> GameState(
-                        s.cluster + (p to FLAGGED),
-                        turnRight().step(),
-                        s.infectCount
-                )
-                FLAGGED -> GameState(
-                        s.cluster - p,
-                        reverse().step(),
-                        s.infectCount
-                )
+                CLEAN -> {
+                    s.cluster.put(p, WEAK)
+                    GameState(
+                            s.cluster,
+                            turnLeft().step(),
+                            s.infectCount
+                    )
+                }
+                WEAK -> {
+                    s.cluster.put(p, INFECTED)
+                    GameState(
+                            s.cluster,
+                            step(),
+                            s.infectCount + 1
+                    )
+                }
+                INFECTED -> {
+                    s.cluster.put(p, FLAGGED)
+                    GameState(
+                            s.cluster,
+                            turnRight().step(),
+                            s.infectCount
+                    )
+                }
+                FLAGGED -> {
+                    s.cluster.remove(p)
+                    GameState(
+                            s.cluster,
+                            reverse().step(),
+                            s.infectCount
+                    )
+                }
             }
 
 }
@@ -138,11 +156,11 @@ private fun partOneFac(iterations: Int) =
 
 private fun partAnyFac(iterations: Int, carrierFactory: (Point) -> Carrier) = { input: String ->
     val (cluster, origin) = parse(input)
-    val counter = generateSequence(1, { it + 1 }).iterator()
+//    val counter = generateSequence(1, { it + 1 }).iterator()
     generateSequence(GameState(cluster, carrierFactory(origin)), { s ->
-        val c = counter.next()
-        if (c % 15_000 == 0)
-            println("${c} bursts (${Math.round(100.0 * c / iterations)}%) w/ ${s.infectCount} infections")
+//        val c = counter.next()
+//        if (c % 15_000 == 0)
+//            println("${c} bursts (${Math.round(100.0 * c / iterations)}%) w/ ${s.infectCount} infections")
         s.carrier.burst(s)
     })
             .drop(iterations)
@@ -150,7 +168,7 @@ private fun partAnyFac(iterations: Int, carrierFactory: (Point) -> Carrier) = { 
             .infectCount
 }
 
-private typealias Cluster = Map<Point, NodeState>
+private typealias Cluster = MutableMap<Point, NodeState>
 
 private fun parse(input: String): Pair<Cluster, Point> {
     val lines = input.trim().split("\n")
@@ -168,7 +186,7 @@ private fun parse(input: String): Pair<Cluster, Point> {
                 ps
         })
     })
-    return Pair(infected, Point(o, o))
+    return Pair(infected.toMutableMap(), Point(o, o))
 }
 
 private val partOne = partOneFac(10000)
