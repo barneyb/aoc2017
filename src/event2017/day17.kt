@@ -1,5 +1,7 @@
 package event2017
 
+import java.io.File
+
 /**
  *
  *
@@ -7,7 +9,7 @@ package event2017
  */
 
 fun main(args: Array<String>) {
-    val input = 335
+    val input = File("input/2017/day17.txt").readText().trim().toInt()
     val exampleInput = 3
 
     banner("part 1")

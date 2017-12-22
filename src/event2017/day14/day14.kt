@@ -4,9 +4,10 @@ import event2017.Point
 import event2017.banner
 import event2017.check
 import event2017.day10.knotHash
+import java.io.File
 
 fun main(args: Array<String>) {
-    val input = "jxqlasbh"
+    val input = File("input/2017/day14.txt").readText().trim()
     val exampleInput = "flqrgnkx"
 
     banner("part 1")
