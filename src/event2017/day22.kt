@@ -51,8 +51,8 @@ private data class State(
         val (min, max) = cluster.fold(Pair(carrier.p, carrier.p), { (min, max), p ->
             Pair(Point(Math.min(min.x, p.x), Math.min(min.y, p.y)), Point(Math.max(max.x, p.x), Math.max(max.y, p.y)))
         })
-        val sb = StringBuilder("from $min to $max\n")
-        for (row in min.y..max.y) {
+        val sb = StringBuilder()
+        for (row in min.y downTo max.y) { // flip it back over for display
             for (col in min.x..max.x) {
                 val p = Point(col, row)
                 sb.append(if (p == carrier.p) '[' else ' ')
