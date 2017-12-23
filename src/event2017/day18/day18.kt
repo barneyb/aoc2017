@@ -46,7 +46,7 @@ fun main(args: Array<String>) {
 
 private fun partOne(input: String) =
         generateSequence(Computer(instructions = loadDuet(input)), { c ->
-            val ins = c.instructions[c.pointer]
+            val ins = c.curr()
             if (ins is ReceiveIns)
                 if (c.get(ins.register) != 0L)
                     null

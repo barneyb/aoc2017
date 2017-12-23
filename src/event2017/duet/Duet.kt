@@ -49,8 +49,8 @@ data class Computer(
         val waiting: Boolean = false,
         val cout: Wire<Long> = cin,
         val pointer: Int = 0,
-        val registers: Map<Char, Long> = mapOf('p' to id),
-        val instructions: List<Instruction>
+        private val registers: Map<Char, Long> = mapOf('p' to id),
+        private val instructions: List<Instruction>
 ) {
 
     val terminated
@@ -72,7 +72,7 @@ data class Computer(
             copy(registers = registers + Pair(register, v))
 
     fun tick(): Computer {
-        val ins = instructions[pointer]
+        val ins = curr()
         return if (ins is JumpIns)
             ins.execute(this)
         else {
@@ -84,6 +84,9 @@ data class Computer(
             }
         }
     }
+
+    fun curr() = instructions[pointer]
+
 }
 
 interface Instruction {
@@ -117,6 +120,7 @@ open class BinaryOpIns(
 }
 
 class AddIns(r: Char, v: Value) : BinaryOpIns(Long::plus, r, v)
+class SubtractIns(r: Char, v: Value) : BinaryOpIns(Long::minus, r, v)
 class MultiplyIns(r: Char, v: Value) : BinaryOpIns(Long::times, r, v)
 class ModuloIns(r: Char, v: Value) : BinaryOpIns(Long::rem, r, v)
 
@@ -147,6 +151,19 @@ class JumpGTZeroIns(
             )
 }
 
+class JumpNonZeroIns(
+        val check: Value,
+        val offset: Value
+) : JumpIns {
+    override fun execute(c: Computer) =
+            c.copy(pointer = c.pointer +
+                    if (c.get(check) != 0L)
+                        c.get(offset).toInt()
+                    else
+                        1
+            )
+}
+
 fun loadDuet(input: String) =
         input.trim()
                 .split("\n")
@@ -156,10 +173,12 @@ fun loadDuet(input: String) =
                         "snd" -> SendIns(Value.parse(cmd[1]))
                         "set" -> SetIns(cmd[1][0], Value.parse(cmd[2]))
                         "add" -> AddIns(cmd[1][0], Value.parse(cmd[2]))
+                        "sub" -> SubtractIns(cmd[1][0], Value.parse(cmd[2]))
                         "mul" -> MultiplyIns(cmd[1][0], Value.parse(cmd[2]))
                         "mod" -> ModuloIns(cmd[1][0], Value.parse(cmd[2]))
                         "rcv" -> ReceiveIns(cmd[1][0])
                         "jgz" -> JumpGTZeroIns(Value.parse(cmd[1]), Value.parse(cmd[2]))
+                        "jnz" -> JumpNonZeroIns(Value.parse(cmd[1]), Value.parse(cmd[2]))
                         else -> throw IllegalArgumentException("Unknown command: $cmd")
                     }
                 }
