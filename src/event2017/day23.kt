@@ -47,9 +47,9 @@ private fun runOnASIC(debug: Boolean = false): Int {
 
     if (!debug) {
         b *= 100
-        b -= -100000
+        b += 100000
         c = b
-        c -= -17000
+        c += 17000
     }
     do {
         f = 1
@@ -63,16 +63,16 @@ private fun runOnASIC(debug: Boolean = false): Int {
                 if (g == 0) {
                     f = 0
                 }
-                e -= -1
+                e += 1
                 g = e
                 g -= b
             } while (g != 0)
-            d -= -1
+            d += 1
             g = d
             g -= b
         } while (g != 0)
         if (f == 0) {
-            h -= -1
+            h += 1
         }
         g = b
         g -= c
@@ -80,7 +80,7 @@ private fun runOnASIC(debug: Boolean = false): Int {
         if (g == 0) {
             return h
         }
-        b -= -17
+        b += 17
     } while (true)
 }
 
