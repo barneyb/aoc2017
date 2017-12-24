@@ -1,5 +1,6 @@
-package event2017
+package event2017.day16
 
+import event2017.banner
 import java.io.File
 
 /**
@@ -12,7 +13,7 @@ fun main(args: Array<String>) {
     val input = File("input/2017/day16.txt").readText()
 
     banner("part 1")
-    val assertOne = check(::dance)
+    val assertOne = event2017.check(::dance)
     assertOne(input, "ebjpfdgmihonackl")
     println("answer: " + dance(input))
 
@@ -32,7 +33,7 @@ fun main(args: Array<String>) {
     // 80 hours with sequence generator
 
     banner("part 2")
-    val assertTwo = check(::wholeDance)
+    val assertTwo = event2017.check(::wholeDance)
     assertTwo(input, "abocefghijklmndp")
     println("answer: " + wholeDance(input))
 }

@@ -1,4 +1,4 @@
-package event2017;
+package event2017.day16;
 
 import java.io.*;
 

@@ -1,5 +1,6 @@
-package event2017
+package event2017.day23
 
+import event2017.banner
 import event2017.duet.Computer
 import event2017.duet.MultiplyIns
 import event2017.duet.loadDuet
@@ -15,7 +16,7 @@ fun main(args: Array<String>) {
     val input = File("input/2017/day23.txt").readText()
 
     banner("part 1")
-    val assertOne = check(::partOne)
+    val assertOne = event2017.check(::partOne)
     assertOne(input, 3025)
     println("answer: " + partOne(input))
 
