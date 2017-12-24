@@ -25,10 +25,10 @@ fun main(args: Array<String>) {
     assertOne(input, 1656)
 //    println("answer: " + partOne(input))
 
-//    banner("part 2")
-//    val assertTwo = check(::partTwo)
-//    assertTwo(exampleInput, 309)
-////    assertTwo(input, 290)
+    banner("part 2")
+    val assertTwo = check(::partTwo)
+    assertTwo(exampleInput, 19)
+    assertTwo(input, 1642)
 //    println("answer: " + partTwo(input))
 }
 
@@ -61,31 +61,31 @@ private data class GrowState(
         val tips: Set<Bridge> = setOf(Bridge())
 )
 
-private fun partOne(input: String): Int {
-    val parts = parse(input)
-    return generateSequence(GrowState(), { gs ->
-        var ms = gs.maxStrength
-        val nextGen = gs.tips.fold(mutableSetOf<Bridge>(), { tips, b ->
-            val candidates = parts.filter {
-                it.canConnect(b.tail) && it !in b.components
-            }
-            if (candidates.isEmpty()) {
-                ms = Math.max(ms, b.strength)
-            }
+private fun partOne(input: String) =
+        grow(parse(input))
+                .last()
+                .maxStrength
+
+private fun grow(parts: List<Component>) =
+        generateSequence(GrowState(), { gs ->
+            var ms = gs.maxStrength
+            val nextGen = gs.tips.fold(mutableSetOf<Bridge>(), { tips, b ->
+                val candidates = parts.filter {
+                    it.canConnect(b.tail) && it !in b.components
+                }
+                if (candidates.isEmpty()) {
+                    ms = Math.max(ms, b.strength)
+                } else
+                    tips.addAll(candidates.map {
+                        b + it
+                    })
+                tips
+            })
+            if (gs.tips == nextGen)
+                null // nothing grew
             else
-                tips.addAll(candidates.map {
-                    b + it
-                })
-            tips
+                GrowState(ms, nextGen)
         })
-        if (gs.tips == nextGen)
-            null // nothing grew
-        else
-            GrowState(ms, nextGen)
-    })
-            .last()
-            .maxStrength
-}
 
 private fun parse(input: String) =
         input.trim()
@@ -98,4 +98,9 @@ private fun parse(input: String) =
                 }
 
 private fun partTwo(input: String) =
-        input.length
+        grow(parse(input))
+                .takeWhile { it.tips.isNotEmpty() }
+                .last()
+                .tips
+                .map { it.strength }
+                .max()!!
