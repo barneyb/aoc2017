@@ -21,9 +21,9 @@ fun main(args: Array<String>) {
 
     banner("part 2")
 //    val assertTwo = check(::partTwo)
-//    assertTwo(input, 290)
+//    assertTwo(input, 916)
     println("answer (debug): " + runOnASIC(true))
-    println("answer: " + runOnASIC())
+//    println("answer: " + runOnASIC())
 }
 
 private fun partOne(input: String) =
