@@ -38,12 +38,6 @@ fun main(args: Array<String>) {
     assertOne(exampleInput, 3)
     assertOne(input, 633)
     println("answer: " + partOne(input))
-
-//    banner("part 2")
-//    val assertTwo = check(::partTwo)
-//    assertTwo(exampleInput, 309)
-////    assertTwo(input, 290)
-//    println("answer: " + partTwo(input))
 }
 
 private data class Blueprint(
@@ -183,6 +177,3 @@ private fun partOne(input: String): Int {
     }
     return tape.countOnes()
 }
-
-private fun partTwo(input: String) =
-        input.length
