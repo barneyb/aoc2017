@@ -36,8 +36,8 @@ fun main(args: Array<String>) {
     banner("part 1")
     val assertOne = check(::partOne)
     assertOne(exampleInput, 3)
-//    assertOne(input, 619)
-//    println("answer: " + partOne(input))
+    assertOne(input, 633)
+    println("answer: " + partOne(input))
 
 //    banner("part 2")
 //    val assertTwo = check(::partTwo)
@@ -54,7 +54,12 @@ private data class Blueprint(
 private data class State(
         var ifFalse: Action?,
         var ifTrue: Action?
-)
+) {
+
+    operator fun get(b: Boolean) =
+            (if (b) ifTrue else ifFalse) as Action
+
+}
 
 private data class Action(
         val write: Boolean,
@@ -117,8 +122,67 @@ private fun parse(input: String): Blueprint {
     return Blueprint(states.get(initial)!!, chksum)
 }
 
-private fun partOne(input: String) =
-        parse(input).checksumCount
+private class Tape() {
+    var curr: Node = Node()
+    var head: Node = curr
+    var tail: Node = curr
+
+    fun tick(s: State): State {
+        val a = s[curr.value]
+        curr.value = a.write
+        if (a.left) left() else right()
+        return a.next
+    }
+
+    fun left() {
+        var n = curr.left
+        if (n == null) {
+            n = Node(right = curr)
+            curr.left = n
+            head = n
+        }
+        curr = n
+    }
+
+    fun right() {
+        var n = curr.right
+        if (n == null) {
+            n = Node(left = curr)
+            curr.right = n
+            tail = n
+        }
+        curr = n
+    }
+
+    fun countOnes(): Int {
+        var c = head as Node?
+        var n = 0
+        while (c != null) {
+            if (c.value)
+                n += 1
+            c = c.right
+        }
+        return n
+    }
+
+    private class Node(
+            var left: Node? = null,
+            var right: Node? = null
+    ) {
+        var value: Boolean = false
+    }
+
+}
+
+private fun partOne(input: String): Int {
+    val blueprint = parse(input)
+    val tape = Tape()
+    var state = blueprint.initialState
+    (1..blueprint.checksumCount).forEach {
+        state = tape.tick(state)
+    }
+    return tape.countOnes()
+}
 
 private fun partTwo(input: String) =
         input.length
