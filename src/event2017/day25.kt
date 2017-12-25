@@ -59,8 +59,23 @@ private data class State(
 private data class Action(
         val write: Boolean,
         val left: Boolean,
-        var next: State?
+        var next: State
 )
+
+private fun ensureState(states: MutableMap<Char, State>, key: Char, ifFalse: Action? = null, ifTrue: Action? = null): State {
+    if (states.containsKey(key)) {
+        val s = states[key]!!
+        if (s.ifFalse == null)
+            s.ifFalse = ifFalse
+        if (s.ifTrue == null)
+            s.ifTrue = ifTrue
+        return s
+    } else {
+        val s = State(ifFalse, ifTrue)
+        states.put(key, s)
+        return s
+    }
+}
 
 private fun parse(input: String): Blueprint {
     val lines = input.trim()
@@ -91,18 +106,12 @@ private fun parse(input: String): Blueprint {
                     lines.next()
                             .split(' ')
                             .last()[0] == 'l',
-                    states.getOrDefault(
-                            lines.next()
-                                    .split(' ')
-                                    .last()[0],
-                            State(null, null)
-                    )
+                    ensureState(states, lines.next()
+                            .split(' ')
+                            .last()[0])
             )
         }
-        val s = states.getOrDefault(label, State(null, null))
-        s.ifFalse = ifFalse
-        s.ifTrue = ifTrue
-        states.put(label, s)
+        ensureState(states, label, ifFalse, ifTrue)
     }
 
     return Blueprint(states.get(initial)!!, chksum)
