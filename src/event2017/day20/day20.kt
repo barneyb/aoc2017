@@ -2,6 +2,8 @@ package event2017.day20
 
 import event2017.banner
 import event2017.check
+import event2017.count
+import event2017.zip
 import java.io.File
 
 /**
@@ -54,7 +56,6 @@ private data class Vector(
 }
 
 private data class Particle(
-        val id: Int,
         val pos: Vector,
         val vel: Vector,
         val acc: Vector
@@ -62,7 +63,6 @@ private data class Particle(
     fun tick(): Particle {
         val newVel = vel + acc
         return Particle(
-                id,
                 pos + newVel,
                 newVel,
                 acc
@@ -70,29 +70,28 @@ private data class Particle(
     }
 }
 
-private fun partOne(input: String): Int = parse(input)
-        .sortedWith(compareBy(
-                { it.acc.m },
-                { it.vel.m },
-                { it.pos.m }
-        )
-        )
-        .first()
-        .id
+private fun partOne(input: String): Int =
+        parse(input)
+                .zip(count())
+                .sortedWith(compareBy(
+                        { it.first.acc.m },
+                        { it.first.vel.m },
+                        { it.first.pos.m }
+                )
+                )
+                .first()
+                .second
 
 private fun parse(input: String): List<Particle> {
-    val lines = input.trim()
+    return input.trim()
             .replace("<", "")
             .replace(">", "")
             .replace(Regex(" *[pva]="), "")
             .split("\n")
-    return (0..lines.size)
-            .zip(lines)
-            .map { (id, line) ->
+            .map { line ->
                 val p = line.split(",")
                         .map { it.trim().toLong() }
                 Particle(
-                        id,
                         Vector(p[0], p[1], p[2]),
                         Vector(p[3], p[4], p[5]),
                         Vector(p[6], p[7], p[8])
