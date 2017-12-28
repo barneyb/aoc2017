@@ -44,6 +44,13 @@ private data class Vector(
                     y + v.y,
                     z + v.z
             )
+
+    operator fun minus(v: Vector) =
+            Vector(
+                    x - v.x,
+                    y - v.y,
+                    z - v.z
+            )
 }
 
 private data class Particle(
