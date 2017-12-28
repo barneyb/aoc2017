@@ -35,7 +35,7 @@ fun <I, R> check(functionUnderTest: (I) -> R): (I, R) -> Boolean {
             if (vi.length > 100) {
                 vi = vi.substring(0, 90) + "...' (${vi.length - 90} chars truncated)"
             }
-            print("FAIL: Expected '$expected' but got '$actual' (from ${vi.replace("\n", "\n    ")})")
+            System.err.print("FAIL: Expected '$expected' but got '$actual' (from ${vi.replace("\n", "\n    ")})")
         }
         println(" (${"%,d".format(elapsed)} ms)")
         pass
