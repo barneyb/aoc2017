@@ -99,6 +99,22 @@ private fun parse(input: String): List<Particle> {
             }
 }
 
+private fun List<Vector>.bounds() =
+        drop(1).fold(Pair(first(), first()), { (min, max), it ->
+            Pair(
+                    Vector(
+                            Math.min(min.x, it.x),
+                            Math.min(min.y, it.y),
+                            Math.min(min.z, it.z)
+                    ),
+                    Vector(
+                            Math.max(max.x, it.x),
+                            Math.max(max.y, it.y),
+                            Math.max(max.z, it.z)
+                    )
+            )
+        })
+
 private fun partTwo(input: String) =
         generateSequence(parse(input), { ps ->
             val collisions = ps.groupBy { it.pos }
@@ -113,5 +129,12 @@ private fun partTwo(input: String) =
             }
         })
                 .drop(45)
+                .filter {
+                    println("hit iteration limit")
+                    println("position: " + it.map { it.pos }.bounds())
+                    println("velocity: " + it.map { it.vel }.bounds())
+                    println("accel: " + it.map { it.acc }.bounds())
+                    true
+                }
                 .first()
                 .size
