@@ -9,7 +9,7 @@ package event2017
 
 fun banner(label: String = "") {
     println((
-            if (label.trim().length == 0)
+            if (label.trim().isEmpty())
                 ""
             else
                 "= $label "
