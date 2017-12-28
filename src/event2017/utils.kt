@@ -45,6 +45,11 @@ fun <I, R> check(functionUnderTest: (I) -> R): (I, R) -> Boolean {
 fun count(start: Int = 0, step: Int = 1) =
         generateSequence(start, { it + step })
 
+infix fun <T, R> Iterable<T>.zip(other: Sequence<R>): List<Pair<T, R>> {
+    val itr = other.iterator()
+    return map { it to itr.next() }
+}
+
 fun <T, R> Iterable<T>.scan(initial: R, operation: (acc: R, T) -> R): List<R> =
         this.fold(Pair(initial, mutableListOf(initial)), { (acc, scan), it ->
             val next = operation(acc, it)
