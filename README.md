@@ -28,3 +28,8 @@ From day 22 onward are implemented in Kotlin in this repository (at
 
 The 2017 solutions are implemented in Kotlin in this (AoC 2017) repository
 at `git@github.com:barneyb/aoc2017.git`.
+
+## 2018
+
+The 2018 solutions are implemented in Java in the AOC 2018 repository at
+`git@github.com:barneyb/aoc-2018.git`.
