@@ -39,4 +39,4 @@ From day 22 onward are implemented in Kotlin in this repository.
 
 ## 2021
 
-2021 is at https://github.com/barneyb/aoc-2021.
+2021 is mostly Kotlin-y at https://github.com/barneyb/aoc-2021.
