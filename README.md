@@ -31,7 +31,7 @@ From day 22 onward are implemented in Kotlin in this repository.
 
 ## 2019
 
-2019 is in Ruby at https://github.com/barneyb/aoc-2019.
+2019 is in Ruby. Talk to ARMUS
 
 ## 2020
 
