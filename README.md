@@ -27,7 +27,7 @@ From day 22 onward are implemented in Kotlin in this repository.
 
 ## 2018
 
-2018 is in Java at https://github.com/barneyb/aoc-2018.
+2018 is in Java. Talk to ARMUS
 
 ## 2019
 
