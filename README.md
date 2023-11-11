@@ -44,3 +44,7 @@ From day 22 onward are implemented in Kotlin in this repository.
 ## 2022
 
 2022 is again mostly Kotlin, at https://github.com/barneyb/aoc-2022
+
+## 2023
+
+2023 is Java-ish, and exactly where you'd expect: https://github.com/barneyb/aoc-2023
