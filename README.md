@@ -48,3 +48,7 @@ From day 22 onward are implemented in Kotlin in this repository.
 ## 2023
 
 2023 started Java-ish, but became Python. It's exactly where you'd expect: https://github.com/barneyb/aoc-2023
+
+## 2024
+
+2024 is again Rust, reusing some Python infrastructure from last year, at ... wait for it ... https://github.com/barneyb/aoc-2024
