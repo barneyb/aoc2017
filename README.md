@@ -52,3 +52,7 @@ From day 22 onward are implemented in Kotlin in this repository.
 ## 2024
 
 2024 is again Rust, reusing some Python infrastructure from last year, at ... wait for it ... https://github.com/barneyb/aoc-2024
+
+## 2025
+
+2025 is Johann, again reusing prior years' Python infrastructure, at https://github.com/barneyb/aoc-2025
