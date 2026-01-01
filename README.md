@@ -1,6 +1,6 @@
 # Advent of Code
 
-This project houses Advent of Code solutions. The general contract is
+This project houses Advent of Code 2017 solutions. The general contract is
 that a an unmodified input file is read in, and the answer is found from
 it without any manual steps. For some problems the input is a single number
 or a alphanumeric string of only a few characters, in which case it's often
@@ -8,12 +8,16 @@ directly in the code.
 
 This isn't universally true. :)
 
+---
+
+This README also indexes all my solutions over the years:
+
 ## 2015
 
-2015 is in Go, in the Project Euler repository at https://github.com/barneyb/project-euler.
+2015 is in Go, in my Project Euler repository at https://github.com/barneyb/project-euler.
 
 Some of them were reimplemented in both Python and Haskell in the Advent of
-Code repository at https://github.com/barneyb/adventofcode.
+Code 2016 repository at https://github.com/barneyb/adventofcode.
 
 ## 2016
 
