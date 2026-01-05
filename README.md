@@ -60,3 +60,7 @@ From day 22 onward are implemented in Kotlin in this repository.
 ## 2025
 
 2025 is Johann, again reusing prior years' Python infrastructure, at https://github.com/barneyb/aoc-2025
+
+---
+
+I also have https://github.com/barneyb/aoc-all, which provides a way to run a bunch of different repos' solvers together, similar to `advent-of-code-data`'s [`aoc` command](https://github.com/wimglenn/advent-of-code-data?tab=readme-ov-file#verify-your-code-against-multiple-inputs). The major difference is that each plugin can indicate which puzzles it can solve.
